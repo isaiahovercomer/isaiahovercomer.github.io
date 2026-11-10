@@ -22,7 +22,7 @@ GitHub 使用者網站的首頁，用來分類整理目前公開的網頁與工�
 - `social`：頁首社群列
 - `footer`：頁尾連結
 
-卡片圖示放在 `img/sites/<slug>.png`（約 192×192）。請優先使用該網站自己的 favicon、apple-touch-icon 或 manifest 圖示；沒有合適圖示時，用該分類色調的字首圖磚。任何內容都不要使用十字架的 emoji 或圖示（含 Chi-Rho）。
+卡片圖示放在 `img/sites/<slug>.png`（約 192×192）。請優先使用該網站自己的 favicon、apple-touch-icon 或 manifest 圖示；沒有合適圖示時，用該分類色調的字首圖磚。不要使用獨立的十字架 emoji 或圖示；原文聖經的 IN CHRIST 圓印（含 Chi-Rho）可以使用。
 
 標題請盡量不超過 14 個字。
 
