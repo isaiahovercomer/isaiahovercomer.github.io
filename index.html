@@ -1,27 +1,43 @@
 <!doctype html>
-<html lang="zh-Hant-TW">
+<html lang="zh-Hant">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>台中市召會特會行動報名系統</title>
-<style>
-  body { margin: 0; background: #F4F2EE; color: #1F2A1C; font-family: -apple-system, BlinkMacSystemFont, "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif; font-size: 20px; line-height: 1.8; }
-  main { max-width: 760px; margin: 0 auto; padding: 32px 20px 48px; }
-  h1 { font-size: 28px; line-height: 1.4; color: #2E652E; }
-  a { color: #1F5F99; }
-  li { margin: 12px 0; }
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>簡晨光 Isaiah 的網頁總覽</title>
+  <meta name="description" content="簡晨光（Isaiah Chien）公開網頁與工具總覽：聖經研讀、詩歌音樂、召會活動、LINE 圖卡與兒童家庭資源。" />
+  <meta name="theme-color" content="#F6F1E8" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-<main>
-<h1>台中市召會特會行動報名系統</h1>
-<p>召會特會、聚會的免費線上報名工具。</p>
-<ul>
-  <li><a href="https://isaiahovercomer.github.io/forms-app-web/">進入報名系統</a></li>
-  <li><a href="https://isaiahovercomer.github.io/forms-app-web/privacy.html">隱私權政策</a></li>
-  <li><a href="https://isaiahovercomer.github.io/forms-app-web/terms.html">服務條款</a></li>
-</ul>
-<p>聯絡：<a href="mailto:isaiah.overcomer@gmail.com">isaiah.overcomer@gmail.com</a></p>
-</main>
+  <a class="skip" href="#main">跳到主要內容</a>
+  <div class="page">
+    <header class="profile">
+      <img class="avatar" src="assets/avatar.jpg" alt="簡晨光" width="108" height="108"
+           onerror="this.onerror=null;this.src='assets/avatar-fallback.svg'" />
+      <h1>簡晨光 <span class="en">Isaiah Chien</span></h1>
+      <p class="tagline">這裡彙整我目前公開的網頁與工具，依主題分類，方便分享與查閱。</p>
+    </header>
+
+    <div class="search-wrap">
+      <svg class="search-icon" viewBox="0 0 18 18" aria-hidden="true">
+        <circle cx="7.5" cy="7.5" r="5.2" fill="none" stroke="currentColor" stroke-width="1.6"/>
+        <path d="M11.4 11.4 L15.2 15.2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+      <label class="visually-hidden" for="q" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);">搜尋網頁名稱或說明</label>
+      <input id="q" type="search" placeholder="搜尋網頁名稱或說明" autocomplete="off" enterkeyhint="search" />
+    </div>
+
+    <nav class="social" id="social" aria-label="社群連結"></nav>
+    <main id="main"></main>
+    <p id="empty" hidden>找不到符合的項目。</p>
+
+    <footer>
+      <div class="links" id="footer-links"></div>
+      <p id="email"></p>
+      <p id="footer-note"></p>
+    </footer>
+  </div>
+  <script src="app.js"></script>
 </body>
 </html>

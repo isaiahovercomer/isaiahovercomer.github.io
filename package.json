@@ -1,0 +1,11 @@
+{
+  "name": "isaiahovercomer-link-hub",
+  "private": true,
+  "description": "簡晨光 Isaiah 的網頁總覽",
+  "scripts": {
+    "test": "playwright test --config=playwright.config.js --workers=2"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.65.0"
+  }
+}

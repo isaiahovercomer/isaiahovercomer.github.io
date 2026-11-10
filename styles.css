@@ -1,0 +1,300 @@
+/* 簡晨光 Isaiah 的網頁總覽 — 淺色素雅，無追蹤，無十字架圖示 */
+:root {
+  --bg: #F6F1E8;
+  --bg-soft: #EFE8DC;
+  --paper: #FFFCF7;
+  --ink: #2A2722;
+  --muted: #6F6A62;
+  --line: #E3DCD0;
+  --sage: #4F6548;
+  --sage-hover: #3F5139;
+  --sage-soft: #E7EEE4;
+  --shadow: 0 1px 2px rgba(42, 39, 34, 0.04), 0 10px 28px rgba(42, 39, 34, 0.06);
+  --radius: 18px;
+  --focus: 2px solid #4F6548;
+  --focus-off: 3px;
+}
+
+* { box-sizing: border-box; }
+
+html {
+  color-scheme: light;
+  background: var(--bg);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--ink);
+  font-family: "PingFang TC", "Noto Sans TC", "Hiragino Kaku Gothic ProN", "Microsoft JhengHei", sans-serif;
+  font-size: 16px;
+  line-height: 1.65;
+  background:
+    radial-gradient(1200px 520px at 50% -80px, #fff8ee 0%, transparent 70%),
+    var(--bg);
+}
+
+.skip {
+  position: absolute;
+  left: 12px;
+  top: -40px;
+  z-index: 10;
+  background: var(--paper);
+  color: var(--ink);
+  padding: 8px 12px;
+  border-radius: 8px;
+}
+.skip:focus { top: 12px; }
+
+.page {
+  width: min(640px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 28px 0 56px;
+}
+
+header.profile {
+  text-align: center;
+  padding: 12px 0 8px;
+}
+
+.avatar {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--bg-soft);
+  box-shadow: 0 0 0 3px #fff, 0 0 0 4px var(--line);
+}
+
+h1 {
+  margin: 16px 0 0;
+  font-family: "Songti TC", "Source Han Serif TC", "Noto Serif TC", "PMingLiU", serif;
+  font-size: 1.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  line-height: 1.3;
+}
+
+h1 .en {
+  display: block;
+  margin-top: 4px;
+  font-family: "PingFang TC", "Noto Sans TC", sans-serif;
+  font-size: 0.92rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.tagline {
+  margin: 10px auto 0;
+  max-width: 32em;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.search-wrap {
+  position: relative;
+  margin: 22px 0 14px;
+}
+
+.search-wrap input {
+  width: 100%;
+  appearance: none;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink);
+  border-radius: 14px;
+  padding: 14px 16px 14px 44px;
+  font: inherit;
+  font-size: 1rem;
+  box-shadow: var(--shadow);
+}
+
+.search-wrap input::placeholder { color: #9A948A; }
+.search-wrap input:focus {
+  outline: var(--focus);
+  outline-offset: var(--focus-off);
+  border-color: var(--sage);
+}
+
+.search-wrap .search-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  width: 18px;
+  height: 18px;
+  transform: translateY(-50%);
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.social {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin: 4px 0 22px;
+}
+
+.social a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 0.9rem;
+  box-shadow: 0 1px 2px rgba(42, 39, 34, 0.03);
+}
+
+.social a:hover { border-color: #cfc7ba; background: #fff; }
+.social a:focus-visible {
+  outline: var(--focus);
+  outline-offset: var(--focus-off);
+}
+
+.social svg {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+}
+
+.category {
+  margin: 0 0 16px;
+  border: 1px solid var(--line);
+  background: transparent;
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.category[hidden],
+.card[hidden] { display: none !important; }
+
+.category > summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--sage);
+  user-select: none;
+}
+
+.category > summary::-webkit-details-marker { display: none; }
+
+.category > summary:focus-visible {
+  outline: var(--focus);
+  outline-offset: calc(-1 * var(--focus-off));
+}
+
+.chevron {
+  width: 12px;
+  height: 12px;
+  color: var(--sage);
+  transition: transform 0.18s ease;
+  flex: 0 0 auto;
+}
+
+.category:not([open]) .chevron { transform: rotate(-90deg); }
+
+.cards {
+  display: grid;
+  gap: 8px;
+  padding: 0 10px 12px;
+}
+
+.card {
+  display: block;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 16px 16px 16px 18px;
+  text-decoration: none;
+  color: inherit;
+  box-shadow: var(--shadow);
+  min-height: 72px;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.card:hover {
+  transform: translateY(-1px);
+  border-color: #d2cbbf;
+}
+
+.card:focus-visible {
+  outline: var(--focus);
+  outline-offset: var(--focus-off);
+}
+
+.card-title {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 1.06rem;
+  font-weight: 650;
+  line-height: 1.4;
+}
+
+.card-title .go {
+  color: var(--sage);
+  font-weight: 500;
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.card p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+#empty {
+  text-align: center;
+  color: var(--muted);
+  padding: 24px 8px;
+}
+
+footer {
+  margin-top: 28px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+footer a {
+  color: var(--sage);
+  text-decoration: none;
+}
+
+footer a:hover { text-decoration: underline; }
+footer a:focus-visible {
+  outline: var(--focus);
+  outline-offset: var(--focus-off);
+}
+
+footer .links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px 14px;
+  margin: 0 0 8px;
+}
+
+@media (min-width: 720px) {
+  body { font-size: 17px; }
+  .page { padding-top: 40px; }
+  .avatar { width: 108px; height: 108px; }
+  .cards { padding: 0 12px 14px; }
+}
