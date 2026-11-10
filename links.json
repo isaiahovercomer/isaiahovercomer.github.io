@@ -16,17 +16,23 @@
         {
           "title": "原文對照聖經",
           "description": "可離線使用的希臘文、希伯來文原文與譯本對照聖經。",
-          "url": "https://isaiahovercomer.github.io/interlinear-bible/"
+          "url": "https://isaiahovercomer.github.io/interlinear-bible/",
+          "id": "interlinear-bible",
+          "icon": "img/sites/interlinear-bible.png"
         },
         {
           "title": "中英晨興聖言",
           "description": "今日晨興聖言：中文、英文與當天禱背綱要。",
-          "url": "https://isaiahovercomer.github.io/morning-revival-today-site/"
+          "url": "https://isaiahovercomer.github.io/morning-revival-today-site/",
+          "id": "morning-revival-today-site",
+          "icon": "img/sites/morning-revival-today-site.png"
         },
         {
           "title": "奶酪與蜂蜜",
           "description": "聖經之旅福音選讀：十五冊圖卡，可依課翻頁閱讀。",
-          "url": "https://isaiahovercomer.github.io/curd-honey-bible-journey/"
+          "url": "https://isaiahovercomer.github.io/curd-honey-bible-journey/",
+          "id": "curd-honey-bible-journey",
+          "icon": "img/sites/curd-honey-bible-journey.png"
         }
       ]
     },
@@ -37,17 +43,23 @@
         {
           "title": "譜間簡譜工作室",
           "description": "從錄音或譜圖編成詞譜，可試聽並匯出 Word、MP3 與 MIDI。",
-          "url": "https://isaiahovercomer.github.io/numbered-score-studio/"
+          "url": "https://isaiahovercomer.github.io/numbered-score-studio/",
+          "id": "numbered-score-studio",
+          "icon": "img/sites/numbered-score-studio.png"
         },
         {
           "title": "以賽亞的園",
           "description": "簡晨光的詩歌與文字園地 Isaiah's Garden。",
-          "url": "https://isaiahtheovercomer.blogspot.com/"
+          "url": "https://isaiahtheovercomer.blogspot.com/",
+          "id": "isaiahs-garden",
+          "icon": "img/sites/isaiahs-garden.png"
         },
         {
           "title": "水深之處文稿",
           "description": "簡晨光在「水深之處」刊登的信仰文章與詩歌桌布。",
-          "url": "https://www.luke54.org/authors/isaiahchien"
+          "url": "https://www.luke54.org/authors/isaiahchien",
+          "id": "luke54-author",
+          "icon": "img/sites/luke54-author.png"
         }
       ]
     },
@@ -58,22 +70,30 @@
         {
           "title": "台中的民數記",
           "description": "台中市召會行動報名與採購統計平台。",
-          "url": "https://isaiahovercomer.github.io/forms-app-web/"
+          "url": "https://isaiahovercomer.github.io/forms-app-web/",
+          "id": "forms-app-web",
+          "icon": "img/sites/forms-app-web.png"
         },
         {
           "title": "全臺青年統計",
           "description": "全臺青年聚會與受浸人數統計（2023–2026）。",
-          "url": "https://isaiahovercomer.github.io/2026-twyp-chlife/"
+          "url": "https://isaiahovercomer.github.io/2026-twyp-chlife/",
+          "id": "2026-twyp-chlife",
+          "icon": "img/sites/2026-twyp-chlife.png"
         },
         {
           "title": "台中聚會統計",
           "description": "2026 年台中市召會聚會人數年度統計。",
-          "url": "https://isaiahovercomer.github.io/2026-tcchlife-pyramid/"
+          "url": "https://isaiahovercomer.github.io/2026-tcchlife-pyramid/",
+          "id": "2026-tcchlife-pyramid",
+          "icon": "img/sites/2026-tcchlife-pyramid.png"
         },
         {
           "title": "全時間工作回報",
           "description": "全時間工作重點回報。",
-          "url": "https://isaiahovercomer.github.io/fulltime-weekly-report/"
+          "url": "https://isaiahovercomer.github.io/fulltime-weekly-report/",
+          "id": "fulltime-weekly-report",
+          "icon": "img/sites/fulltime-weekly-report.png"
         }
       ]
     },
@@ -84,17 +104,23 @@
         {
           "title": "網頁圖卡平台",
           "description": "把網頁做成可在 LINE 對話分享的圖卡。",
-          "url": "https://isaiahovercomer.github.io/line-link-card/"
+          "url": "https://isaiahovercomer.github.io/line-link-card/",
+          "id": "line-link-card",
+          "icon": "img/sites/line-link-card.png"
         },
         {
           "title": "活動登記圖卡",
           "description": "為活動建立可在 LINE 分享的登記圖卡。",
-          "url": "https://isaiahovercomer.github.io/line-signup/"
+          "url": "https://isaiahovercomer.github.io/line-signup/",
+          "id": "line-signup",
+          "icon": "img/sites/line-signup.png"
         },
         {
           "title": "流通神聖的愛",
           "description": "為活動建立可傳情、拆信的 LINE 圖卡。",
-          "url": "https://isaiahovercomer.github.io/line-love-letter/"
+          "url": "https://isaiahovercomer.github.io/line-love-letter/",
+          "id": "line-love-letter",
+          "icon": "img/sites/line-love-letter.png"
         }
       ]
     },
@@ -105,12 +131,16 @@
         {
           "title": "家庭時光365",
           "description": "給台灣兒童家庭的分齡繪本、朗讀與故事。",
-          "url": "https://isaiahovercomer.github.io/family-story-365/"
+          "url": "https://isaiahovercomer.github.io/family-story-365/",
+          "id": "family-story-365",
+          "icon": "img/sites/family-story-365.png"
         },
         {
           "title": "兒童家長單張",
           "description": "兒童家長福音單張動畫版。",
-          "url": "https://isaiahovercomer.github.io/gospel-tracts-animation/"
+          "url": "https://isaiahovercomer.github.io/gospel-tracts-animation/",
+          "id": "gospel-tracts-animation",
+          "icon": "img/sites/gospel-tracts-animation.png"
         }
       ]
     }
@@ -125,6 +155,11 @@
       "id": "instagram",
       "title": "Instagram",
       "url": "https://www.instagram.com/isaiah.chien/"
+    },
+    {
+      "id": "facebook",
+      "title": "Facebook",
+      "url": "https://www.facebook.com/isaiah.overcomer"
     },
     {
       "id": "soundcloud",

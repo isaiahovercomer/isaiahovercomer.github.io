@@ -8,11 +8,12 @@
   --line: #E3DCD0;
   --sage: #4F6548;
   --sage-hover: #3F5139;
-  --sage-soft: #E7EEE4;
-  --shadow: 0 1px 2px rgba(42, 39, 34, 0.04), 0 10px 28px rgba(42, 39, 34, 0.06);
-  --radius: 18px;
+  --shadow: 0 1px 2px rgba(42, 39, 34, 0.04), 0 8px 22px rgba(42, 39, 34, 0.06);
+  --shadow-hover: 0 2px 6px rgba(42, 39, 34, 0.07), 0 12px 28px rgba(42, 39, 34, 0.08);
+  --radius: 20px;
   --focus: 2px solid #4F6548;
   --focus-off: 3px;
+  --icon: 52px;
 }
 
 * { box-sizing: border-box; }
@@ -30,7 +31,7 @@ body {
   font-size: 16px;
   line-height: 1.65;
   background:
-    radial-gradient(1200px 520px at 50% -80px, #fff8ee 0%, transparent 70%),
+    radial-gradient(900px 480px at 50% -120px, #fff9f1 0%, transparent 72%),
     var(--bg);
 }
 
@@ -47,54 +48,75 @@ body {
 .skip:focus { top: 12px; }
 
 .page {
-  width: min(640px, calc(100% - 32px));
+  width: min(880px, calc(100% - 32px));
   margin: 0 auto;
-  padding: 28px 0 56px;
+  padding: 28px 0 64px;
 }
 
 header.profile {
   text-align: center;
-  padding: 12px 0 8px;
+  padding: 8px 0 4px;
 }
 
 .avatar {
-  width: 96px;
-  height: 96px;
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
   object-fit: cover;
   background: var(--bg-soft);
-  box-shadow: 0 0 0 3px #fff, 0 0 0 4px var(--line);
+  box-shadow:
+    0 0 0 3px #fff,
+    0 0 0 5px #ded6c8,
+    0 12px 28px rgba(42, 39, 34, 0.10);
+}
+
+.eyebrow {
+  margin: 16px 0 0;
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  color: var(--sage);
+  font-weight: 600;
 }
 
 h1 {
-  margin: 16px 0 0;
+  margin: 4px 0 0;
   font-family: "Songti TC", "Source Han Serif TC", "Noto Serif TC", "PMingLiU", serif;
-  font-size: 1.75rem;
+  font-size: 1.85rem;
   font-weight: 600;
-  letter-spacing: 0.04em;
-  line-height: 1.3;
+  letter-spacing: 0.06em;
+  line-height: 1.25;
 }
 
 h1 .en {
   display: block;
   margin-top: 4px;
   font-family: "PingFang TC", "Noto Sans TC", sans-serif;
-  font-size: 0.92rem;
+  font-size: 0.88rem;
   font-weight: 500;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.12em;
   color: var(--muted);
 }
 
+.rule {
+  display: block;
+  width: 48px;
+  height: 1px;
+  margin: 14px auto 0;
+  background: #c9bfb0;
+  border: 0;
+}
+
 .tagline {
-  margin: 10px auto 0;
-  max-width: 32em;
+  margin: 12px auto 0;
+  max-width: 30em;
   color: var(--muted);
   font-size: 0.95rem;
+  line-height: 1.7;
 }
 
 .search-wrap {
   position: relative;
-  margin: 22px 0 14px;
+  margin: 24px 0 16px;
 }
 
 .search-wrap input {
@@ -103,7 +125,7 @@ h1 .en {
   border: 1px solid var(--line);
   background: var(--paper);
   color: var(--ink);
-  border-radius: 14px;
+  border-radius: 16px;
   padding: 14px 16px 14px 44px;
   font: inherit;
   font-size: 1rem;
@@ -133,21 +155,21 @@ h1 .en {
   flex-wrap: wrap;
   justify-content: center;
   gap: 8px;
-  margin: 4px 0 22px;
+  margin: 2px 0 26px;
 }
 
 .social a {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  min-height: 44px;
-  padding: 8px 14px;
+  min-height: 42px;
+  padding: 7px 13px;
   border-radius: 999px;
   background: var(--paper);
   border: 1px solid var(--line);
   color: var(--ink);
   text-decoration: none;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   box-shadow: 0 1px 2px rgba(42, 39, 34, 0.03);
 }
 
@@ -158,18 +180,24 @@ h1 .en {
 }
 
 .social svg {
-  width: 16px;
-  height: 16px;
+  width: 15px;
+  height: 15px;
   flex: 0 0 auto;
 }
 
 .category {
-  margin: 0 0 16px;
+  margin: 0 0 14px;
   border: 1px solid var(--line);
-  background: transparent;
+  background: color-mix(in srgb, var(--cat, var(--bg-soft)) 70%, #fff);
   border-radius: var(--radius);
   overflow: hidden;
 }
+
+.category[data-id="bible"]      { --cat: #E7EEE4; --cat-ink: #3F4F3A; }
+.category[data-id="music"]      { --cat: #F3E9D8; --cat-ink: #6B4A28; }
+.category[data-id="church"]     { --cat: #E4EEEC; --cat-ink: #2F534C; }
+.category[data-id="line-cards"] { --cat: #F3EBE4; --cat-ink: #6A4B3A; }
+.category[data-id="family"]     { --cat: #F6EBE6; --cat-ink: #8A4E42; }
 
 .category[hidden],
 .card[hidden] { display: none !important; }
@@ -181,10 +209,10 @@ h1 .en {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 14px 16px;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  color: var(--sage);
+  padding: 13px 18px 11px;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  color: var(--cat-ink, var(--sage));
   user-select: none;
 }
 
@@ -198,7 +226,7 @@ h1 .en {
 .chevron {
   width: 12px;
   height: 12px;
-  color: var(--sage);
+  color: var(--cat-ink, var(--sage));
   transition: transform 0.18s ease;
   flex: 0 0 auto;
 }
@@ -207,26 +235,30 @@ h1 .en {
 
 .cards {
   display: grid;
+  grid-template-columns: 1fr;
   gap: 8px;
   padding: 0 10px 12px;
 }
 
 .card {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 14px;
   background: var(--paper);
   border: 1px solid var(--line);
-  border-radius: 14px;
-  padding: 16px 16px 16px 18px;
+  border-radius: 16px;
+  padding: 12px 14px;
   text-decoration: none;
   color: inherit;
   box-shadow: var(--shadow);
-  min-height: 72px;
-  transition: transform 0.15s ease, border-color 0.15s ease;
+  min-height: 76px;
+  transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .card:hover {
   transform: translateY(-1px);
   border-color: #d2cbbf;
+  box-shadow: var(--shadow-hover);
 }
 
 .card:focus-visible {
@@ -234,28 +266,42 @@ h1 .en {
   outline-offset: var(--focus-off);
 }
 
+.card-icon {
+  width: var(--icon);
+  height: var(--icon);
+  border-radius: 14px;
+  object-fit: cover;
+  flex: 0 0 var(--icon);
+  background: var(--bg-soft);
+  box-shadow: 0 0 0 1px rgba(42, 39, 34, 0.06);
+}
+
+.card-body { flex: 1 1 auto; min-width: 0; }
+
 .card-title {
   display: flex;
   align-items: baseline;
-  justify-content: space-between;
-  gap: 10px;
-  font-size: 1.06rem;
+  gap: 8px;
+  font-size: 1.04rem;
   font-weight: 650;
-  line-height: 1.4;
+  line-height: 1.35;
+  letter-spacing: 0.01em;
 }
 
-.card-title .go {
-  color: var(--sage);
-  font-weight: 500;
-  font-size: 1.1rem;
-  line-height: 1;
-}
-
-.card p {
-  margin: 4px 0 0;
+.card-body p {
+  margin: 3px 0 0;
   color: var(--muted);
-  font-size: 0.9rem;
-  line-height: 1.55;
+  font-size: 0.86rem;
+  line-height: 1.5;
+}
+
+.card .go {
+  color: var(--cat-ink, var(--sage));
+  font-weight: 500;
+  font-size: 1.15rem;
+  line-height: 1;
+  flex: 0 0 auto;
+  opacity: 0.7;
 }
 
 #empty {
@@ -265,7 +311,7 @@ h1 .en {
 }
 
 footer {
-  margin-top: 28px;
+  margin-top: 32px;
   padding-top: 18px;
   border-top: 1px solid var(--line);
   color: var(--muted);
@@ -294,7 +340,13 @@ footer .links {
 
 @media (min-width: 720px) {
   body { font-size: 17px; }
-  .page { padding-top: 40px; }
-  .avatar { width: 108px; height: 108px; }
-  .cards { padding: 0 12px 14px; }
+  .page { padding-top: 44px; }
+  .avatar { width: 112px; height: 112px; }
+  .cards {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    padding: 0 14px 16px;
+  }
+  .card { padding: 13px 14px 13px 13px; }
+  .card-body p { font-size: 0.84rem; }
 }

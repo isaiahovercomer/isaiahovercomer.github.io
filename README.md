@@ -18,11 +18,14 @@ GitHub 使用者網站的首頁，用來分類整理目前公開的網頁與工�
 
 編輯根目錄的 [`links.json`](links.json) 即可，不必改程式。
 
-- `categories`：分類與卡片（標題、一行說明、網址）
+- `categories`：分類與卡片（標題、一行說明、網址、圖示）
 - `social`：頁首社群列
 - `footer`：頁尾連結
 
-標題請盡量不超過 14 個字。任何內容都不要使用十字架的 emoji 或圖示。
+卡片圖示放在 `img/sites/<slug>.png`（約 192×192）。請優先使用該網站自己的 favicon、apple-touch-icon 或 manifest 圖示；沒有合適圖示時，用該分類色調的字首圖磚。任何內容都不要使用十字架的 emoji 或圖示（含 Chi-Rho）。
+
+標題請盡量不超過 14 個字。
+
 
 ## 本機預覽
 
