@@ -5,8 +5,7 @@
     "nameEn": "Isaiah Chien",
     "tagline": "這裡彙整我目前公開的網頁與工具，依主題分類，方便分享與查閱。",
     "email": "isaiah.overcomer@gmail.com",
-    "avatar": "assets/avatar.jpg",
-    "footerNote": "原「特會行動報名」入口仍可使用。"
+    "avatar": "assets/avatar.jpg"
   },
   "categories": [
     {
@@ -180,10 +179,6 @@
     "terms": {
       "title": "服務條款",
       "url": "https://isaiahovercomer.github.io/forms-app-web/terms.html"
-    },
-    "legacyHome": {
-      "title": "特會報名入口",
-      "url": "signup/"
     }
   }
 }
