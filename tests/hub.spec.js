@@ -57,9 +57,9 @@ test.describe('link hub', () => {
       await expect(el).toHaveAttribute('open', '');
     }
 
-    // at least 16 content cards (16 items in links.json)
-    await expect(page.locator('a.card')).toHaveCount(16);
-    await expect(page.locator('a.card img.card-icon')).toHaveCount(16);
+    // at least 15 content cards (15 items in links.json)
+    await expect(page.locator('a.card')).toHaveCount(15);
+    await expect(page.locator('a.card img.card-icon')).toHaveCount(15);
     await expect(page.getByRole('navigation', { name: '社群連結' }).getByRole('link', { name: 'Facebook' })).toBeVisible();
     await expect(page.getByRole('navigation', { name: '社群連結' }).getByRole('link', { name: 'Facebook' })).toHaveAttribute('href', 'https://www.facebook.com/isaiah.overcomer');
 
@@ -107,7 +107,7 @@ test.describe('link hub', () => {
     await expect(page.locator('#empty')).toBeVisible();
 
     await page.locator('#q').fill('');
-    await expect(page.locator('a.card:visible')).toHaveCount(16);
+    await expect(page.locator('a.card:visible')).toHaveCount(15);
 
     // collapse one category
     const first = cats.first();
