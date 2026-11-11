@@ -27,6 +27,10 @@ GitHub 使用者網站的首頁，用來分類整理目前公開的網頁與工�
 標題請盡量不超過 14 個字。
 
 
+## 子頁 `line/`
+
+「召會生活實行常用LINE功能整理」：三個 LINE 建立平台（活動登記、網頁圖卡、流通愛圖卡）的大卡片入口，可加到手機主畫面（PWA：`line/manifest.webmanifest`、`line/sw.js` 只快取本頁靜態檔）。各平台圖示複製自各自的 repo（`line/img/`）；整合圖示原檔為 `line/img/app-icon.svg`，PNG 以 Chromium 轉出。
+
 ## 本機預覽
 
 ```bash

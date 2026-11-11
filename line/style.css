@@ -1,0 +1,196 @@
+/* 召會生活實行常用LINE功能整理 — 手機優先、大字大按鈕，無十字架與 emoji */
+:root {
+  --bg: #F6F1E7;
+  --ink: #26241F;
+  --muted: #5F5A51;
+  --radius: 24px;
+  --shadow: 0 1px 2px rgba(38, 36, 31, 0.05), 0 10px 26px rgba(38, 36, 31, 0.07);
+}
+
+* { box-sizing: border-box; }
+
+html {
+  color-scheme: light;
+  background: var(--bg);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--ink);
+  font-family: "PingFang TC", "Noto Sans TC", "Hiragino Kaku Gothic ProN", "Microsoft JhengHei", sans-serif;
+  font-size: 20px;
+  line-height: 1.7;
+  background:
+    radial-gradient(900px 480px at 50% -140px, #FFFAF2 0%, transparent 72%),
+    var(--bg);
+}
+
+.page {
+  width: min(1120px, calc(100% - 28px));
+  margin: 0 auto;
+  padding: calc(24px + env(safe-area-inset-top)) 0 calc(48px + env(safe-area-inset-bottom));
+}
+
+.top { text-align: center; padding: 4px 4px 8px; }
+.top-icon { display: block; margin: 0 auto 10px; border-radius: 16px; box-shadow: var(--shadow); }
+h1 { margin: 0; font-size: 28px; line-height: 1.4; letter-spacing: 0.02em; }
+.lead { margin: 10px auto 0; max-width: 34em; color: var(--muted); font-size: 18px; }
+
+.tools {
+  list-style: none;
+  margin: 22px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 18px;
+}
+
+.tool {
+  --tone: #EEF3EC;
+  --edge: #CFDDCC;
+  --accent: #3A6848;
+  --accent-ink: #243028;
+  display: flex;
+  flex-direction: column;
+  padding: 22px 20px 20px;
+  border: 1px solid var(--edge);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  background-color: var(--tone);
+  background-repeat: repeat;
+}
+
+/* 活動登記：淡鼠尾草綠，淡淡圓點 */
+.tool-signup {
+  --tone: #EEF3EC;
+  --edge: #CFDDCC;
+  --accent: #3A6848;
+  --accent-ink: #213A29;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36'%3E%3Ccircle cx='6' cy='6' r='2.4' fill='%233A6848' fill-opacity='.07'/%3E%3Ccircle cx='24' cy='24' r='2.4' fill='%233A6848' fill-opacity='.07'/%3E%3C/svg%3E");
+}
+
+/* 網頁圖卡：淡霧藍，淡淡波紋 */
+.tool-card {
+  --tone: #EDF2F7;
+  --edge: #CAD7E4;
+  --accent: #385A7C;
+  --accent-ink: #1F3550;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='24'%3E%3Cpath d='M0 12 Q16 4 32 12 T64 12' fill='none' stroke='%23385A7C' stroke-opacity='.07' stroke-width='2'/%3E%3C/svg%3E");
+}
+
+/* 流通愛圖卡：米白配暖杏，淡淡小圓環 */
+.tool-love {
+  --tone: #FBF6EC;
+  --edge: #EBD6BA;
+  --accent: #8C5C2C;
+  --accent-ink: #5E3C1B;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44'%3E%3Ccircle cx='11' cy='11' r='5' fill='none' stroke='%23C49356' stroke-opacity='.13' stroke-width='1.6'/%3E%3Ccircle cx='33' cy='33' r='5' fill='none' stroke='%23C49356' stroke-opacity='.13' stroke-width='1.6'/%3E%3C/svg%3E");
+}
+
+.tool-head { display: flex; align-items: center; gap: 14px; }
+.tool-head img {
+  flex: none;
+  width: 72px;
+  height: 72px;
+  border-radius: 18px;
+  box-shadow: 0 2px 8px rgba(38, 36, 31, 0.12);
+}
+.tool h2 {
+  margin: 0;
+  font-size: 23px;
+  line-height: 1.4;
+  color: var(--accent-ink);
+}
+.num {
+  display: inline-grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  margin-right: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  font-size: 17px;
+  line-height: 1;
+  vertical-align: 3px;
+}
+
+.tool-desc { margin: 14px 0 18px; font-size: 20px; flex: 1; }
+
+.actions { display: grid; gap: 12px; }
+
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 62px;
+  padding: 10px 18px;
+  border-radius: 16px;
+  font: inherit;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn:focus-visible { outline: 3px solid var(--accent, #3A6848); outline-offset: 3px; }
+
+.btn-open {
+  color: #fff;
+  background: var(--accent);
+  border: 2px solid var(--accent);
+}
+.btn-open:active { filter: brightness(0.92); }
+
+.btn-copy {
+  color: var(--accent-ink);
+  background: rgba(255, 255, 255, 0.85);
+  border: 2px solid var(--edge);
+  font-size: 20px;
+  min-height: 56px;
+}
+.btn-copy:active { background: #fff; }
+
+.status {
+  min-height: 1.7em;
+  margin: 14px 0 0;
+  text-align: center;
+  font-weight: 700;
+  color: #3A6848;
+}
+
+.install {
+  margin-top: 10px;
+  padding: 20px;
+  border-radius: var(--radius);
+  background: #FFFCF7;
+  border: 1px solid #E5DDCF;
+}
+.install h2 { margin: 0 0 6px; font-size: 22px; }
+.install p { margin: 0 0 12px; }
+.install dl { margin: 0; }
+.install dt { margin-top: 10px; font-weight: 700; }
+.install dd { margin: 2px 0 0; }
+.install .note { margin: 14px 0 0; color: var(--muted); font-size: 18px; }
+.btn-install {
+  width: 100%;
+  margin: 4px 0 8px;
+  color: #fff;
+  background: #3A6848;
+  border: 2px solid #3A6848;
+}
+.btn-install[hidden] { display: none; }
+
+footer { margin-top: 26px; text-align: center; font-size: 18px; }
+footer a { color: #385A7C; text-underline-offset: 4px; }
+
+@media (min-width: 900px) {
+  .tools { grid-template-columns: repeat(3, 1fr); gap: 22px; }
+  .install { max-width: 760px; margin-left: auto; margin-right: auto; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .btn { transition: filter 0.15s ease, background-color 0.15s ease; }
+}

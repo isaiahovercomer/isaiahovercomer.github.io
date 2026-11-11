@@ -102,6 +102,13 @@
       "title": "LINE 圖卡工具",
       "items": [
         {
+          "title": "LINE功能整理",
+          "description": "召會生活實行常用的三個 LINE 建立平台，可加到手機主畫面。",
+          "url": "line/",
+          "id": "line-tools",
+          "icon": "img/sites/line-tools.png"
+        },
+        {
           "title": "網頁圖卡平台",
           "description": "把網頁做成可在 LINE 對話分享的圖卡。",
           "url": "https://isaiahovercomer.github.io/line-link-card/",
