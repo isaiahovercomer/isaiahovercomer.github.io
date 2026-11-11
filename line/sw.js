@@ -1,5 +1,5 @@
 // 只快取本頁（/line/）自己的靜態檔；LIFF 連結與其他網址一律直接走網路。
-const CACHE = 'line-tools-v1';
+const CACHE = 'line-tools-v2';
 const FILES = [
   './',
   'index.html',
