@@ -2,9 +2,12 @@
 const path = require('path');
 
 const port = process.env.HUB_PORT || '18765';
-const chrome =
-  process.env.PLAYWRIGHT_CHROME ||
-  '/home/box/.cache/ms-playwright/chromium-1248/chrome-linux64/chrome';
+const fs = require('fs');
+const chrome = [
+  process.env.PLAYWRIGHT_CHROME,
+  '/home/box/.cache/ms-playwright/chromium-1255/chrome-linux64/chrome',
+  '/home/box/.cache/ms-playwright/chromium-1248/chrome-linux64/chrome',
+].find((c) => c && fs.existsSync(c));
 
 /** @type {import('@playwright/test').PlaywrightTestConfig} */
 module.exports = {

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- 台中全時間百寶箱：米白底，一個百寶箱，三層色帶呼應三張卡片（鼠尾草綠、霧藍、暖杏） -->
+  <defs>
+    <clipPath id="box">
+      <rect x="72" y="170" width="368" height="262" rx="42"/>
+    </clipPath>
+  </defs>
+  <rect width="512" height="512" fill="#F6F1E7"/>
+  <path d="M188 176 V138 a30 30 0 0 1 30 -30 h76 a30 30 0 0 1 30 30 V176" fill="none" stroke="#5E5546" stroke-width="26" stroke-linejoin="round"/>
+  <g clip-path="url(#box)">
+    <rect x="72" y="170" width="368" height="96" fill="#7E9F86"/>
+    <rect x="72" y="266" width="368" height="84" fill="#7895B4"/>
+    <rect x="72" y="350" width="368" height="82" fill="#D9A673"/>
+  </g>
+  <rect x="72" y="258" width="368" height="16" fill="#FFFAF2" opacity=".9"/>
+  <rect x="220" y="240" width="72" height="52" rx="14" fill="#FFFAF2"/>
+  <rect x="242" y="256" width="28" height="20" rx="6" fill="#5E5546"/>
+  <rect x="120" y="374" width="120" height="18" rx="9" fill="#FFFAF2" opacity=".75"/>
+</svg>
