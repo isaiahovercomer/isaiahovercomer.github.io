@@ -108,6 +108,9 @@
 
   /* ---------- 首頁共用連結 ---------- */
   // 常用研讀與召會事務在前，分享工具與內容接續；未列出的項目保留資料原順序。
+  // 僅在百寶箱隱藏；未列入排除表的首頁新增資料仍自動顯示。
+  const EXCLUDED_CATEGORY_IDS = new Set(['social', 'info']);
+  const EXCLUDED_ITEM_IDS = new Set(['isaiahs-garden']);
   const CATEGORY_ORDER = ['bible', 'church', 'line-cards', 'music', 'family', 'social', 'info'];
   const ITEM_ORDER = {
     bible: ['morning-revival-today-site', 'interlinear-bible'],
@@ -137,12 +140,13 @@
           .filter(([, item]) => item && item.url).map(([id, item]) => ({ ...item, id })) },
       ];
       const sections = [];
-      for (const [categoryIndex, group] of ordered(groups, CATEGORY_ORDER).entries()) {
+      for (const [categoryIndex, group] of ordered(groups.filter(group => !EXCLUDED_CATEGORY_IDS.has(group.id)), CATEGORY_ORDER).entries()) {
         // Distinct color families in display order; future categories also receive a hue.
         const hues = [145, 282, 60, 197, 335, 25, 250];
         const hue = hues[categoryIndex] ?? (145 + categoryIndex * 137.508) % 360;
         const cards = [];
         for (const item of ordered(group.items, ITEM_ORDER[group.id] || [])) {
+          if (EXCLUDED_ITEM_IDS.has(item.id)) continue;
           const url = new URL(item.url, root);
           if (!/^https?:$/.test(url.protocol)) continue;
           if (url.origin === self.origin && url.pathname.replace(/index\.html$/, '').replace(/\/$/, '') === self.pathname.replace(/\/$/, '')) continue;

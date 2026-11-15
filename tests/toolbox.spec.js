@@ -29,10 +29,19 @@ for (const group of groups) {
   const order = itemOrder[group.id] || [];
   group.items = [...group.items].sort((a, b) => rank(order, a.id) - rank(order, b.id));
 }
+const excludedGroups = groups.filter(g => ['social', 'info'].includes(g.id));
+const excludedTools = [...excludedGroups.flatMap(g => g.items), ...groups.flatMap(g => g.items).filter(i => i.id === 'isaiahs-garden')];
+groups.splice(0, groups.length, ...groups.filter(g => !['social', 'info'].includes(g.id)));
+for (const group of groups) group.items = group.items.filter(i => i.id !== 'isaiahs-garden');
 const tools = groups.flatMap((g) => g.items);
 const resolved = (url, page) => new URL(url, new URL('../', page.url())).href;
 
 async function expectBuiltins(page) {
+  for (const group of excludedGroups) await expect(page.locator('#builtin .category > h2')).not.toContainText([group.title]);
+  for (const item of excludedTools) {
+    await expect(page.locator('#builtin h3').filter({ hasText: item.title })).toHaveCount(0);
+    expect(await page.locator('#builtin a.btn-open').evaluateAll(as => as.map(a => a.href))).not.toContain(resolved(item.url, page));
+  }
   const cards = page.locator('#builtin li.tool');
   await expect(cards).toHaveCount(tools.length);
   await expect(page.locator('#builtin .category > h2')).toHaveText(groups.map((g) => g.title));
@@ -85,7 +94,7 @@ test.describe('台中全時間服事百寶箱', () => {
       await useFakeApi(page, (route, req) => json(route, req.method() === 'POST'
         ? { ok: true } : { ok: true, items: [{ name: '推薦工具', description: '已審核說明', url: 'https://example.org/' }] }));
       await page.goto('/toolbox/', { waitUntil: 'networkidle' });
-      await expect(page.locator('#builtin .category')).toHaveCount(7);
+      await expect(page.locator('#builtin .category')).toHaveCount(groups.length);
       const results = [];
       async function check(state) {
         const rows = await page.evaluate(() => {
@@ -211,7 +220,7 @@ test.describe('台中全時間服事百寶箱', () => {
   test('categories expand by default and toggle accessibly without affecting submission', async ({ page }) => {
     await page.goto('/toolbox/', { waitUntil: 'networkidle' });
     const categories = page.locator('#builtin .category');
-    await expect(categories).toHaveCount(7);
+    await expect(categories).toHaveCount(groups.length);
     await page.locator('#f-name').fill('保留表單內容');
     for (const category of await categories.all()) {
       const toggle = category.locator('h2').getByRole('button');
@@ -247,7 +256,7 @@ test.describe('台中全時間服事百寶箱', () => {
     await expect(page.locator('#form-error')).toHaveText('請填寫網址。');
   });
 
-  test('loads, links, manifest, icons, service worker, screenshots', async ({ page, context }, testInfo) => {
+  test('all homepage links except exclusions appear, exclusions stay absent, manifest, icons, service worker, screenshots', async ({ page, context }, testInfo) => {
     await context.grantPermissions(['clipboard-read', 'clipboard-write']);
     const external = [];
     page.on('request', (r) => { if (!r.url().startsWith('http://127.0.0.1')) external.push(r.url()); });
