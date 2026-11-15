@@ -107,6 +107,23 @@
   }
 
   /* ---------- 首頁共用連結 ---------- */
+  // 常用研讀與召會事務在前，分享工具與內容接續；未列出的項目保留資料原順序。
+  const CATEGORY_ORDER = ['bible', 'church', 'line-cards', 'music', 'family', 'social', 'info'];
+  const ITEM_ORDER = {
+    bible: ['morning-revival-today-site', 'interlinear-bible'],
+    church: ['forms-app-web', '2026-tcchlife-pyramid', '2026-twyp-chlife'],
+    'line-cards': ['line-tools', 'line-signup', 'line-link-card', 'line-love-letter', 'fulltime-weekly-report'],
+    music: ['isaiahs-garden', 'numbered-score-studio'],
+    family: ['family-story-365', 'gospel-tracts-animation', 'curd-honey-bible-journey'],
+    social: ['youtube', 'soundcloud', 'blog', 'facebook', 'instagram'],
+    info: ['privacy', 'terms'],
+  };
+
+  function ordered(items, order) {
+    const rank = (id) => order.includes(id) ? order.indexOf(id) : order.length;
+    return [...items].sort((a, b) => rank(a.id) - rank(b.id));
+  }
+
   async function loadBuiltins() {
     const message = document.getElementById('builtin-status');
     try {
@@ -115,13 +132,14 @@
       const self = new URL('./', location.href);
       const groups = [
         ...data.categories,
-        { title: '社群連結', items: data.social || [] },
-        { title: '網站資訊', items: Object.values(data.footer || {}).filter((item) => item && item.url) },
+        { id: 'social', title: '社群連結', items: data.social || [] },
+        { id: 'info', title: '網站資訊', items: Object.entries(data.footer || {})
+          .filter(([, item]) => item && item.url).map(([id, item]) => ({ ...item, id })) },
       ];
       const sections = [];
-      for (const group of groups) {
+      for (const group of ordered(groups, CATEGORY_ORDER)) {
         const cards = [];
-        for (const item of group.items) {
+        for (const item of ordered(group.items, ITEM_ORDER[group.id] || [])) {
           const url = new URL(item.url, root);
           if (!/^https?:$/.test(url.protocol)) continue;
           if (url.origin === self.origin && url.pathname.replace(/index\.html$/, '').replace(/\/$/, '') === self.pathname.replace(/\/$/, '')) continue;
@@ -134,9 +152,20 @@
         const section = document.createElement('section');
         section.className = 'category';
         const heading = document.createElement('h2');
-        heading.textContent = group.title;
+        const toggle = document.createElement('button');
+        toggle.type = 'button';
+        toggle.className = 'category-toggle';
+        toggle.textContent = group.title;
+        toggle.setAttribute('aria-expanded', 'true');
+        heading.append(toggle);
         const list = document.createElement('ol');
         list.className = 'tools';
+        list.id = `category-tools-${sections.length}`;
+        toggle.setAttribute('aria-controls', list.id);
+        toggle.addEventListener('click', () => {
+          list.hidden = !list.hidden;
+          toggle.setAttribute('aria-expanded', String(!list.hidden));
+        });
         list.append(...cards);
         section.append(heading, list);
         sections.push(section);

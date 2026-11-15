@@ -1,7 +1,7 @@
 {
   "id": "/toolbox/",
-  "name": "台中全時間百寶箱",
-  "short_name": "全時間百寶箱",
+  "name": "台中全時間服事百寶箱",
+  "short_name": "服事百寶箱",
   "description": "台中全時間常用工具與連結，可投稿、經審核後顯示。",
   "lang": "zh-Hant-TW",
   "start_url": "/toolbox/",

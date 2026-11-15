@@ -10,9 +10,25 @@ const emoji = /\p{Extended_Pictographic}/u;
 const FAKE_API = 'https://toolbox-api.example/exec';
 
 const hub = require('../links.json');
+const categoryOrder = ['bible', 'church', 'line-cards', 'music', 'family', 'social', 'info'];
+const itemOrder = {
+  social: ['youtube', 'soundcloud', 'blog', 'facebook', 'instagram'],
+  info: ['privacy', 'terms'],
+  bible: ['morning-revival-today-site', 'interlinear-bible'],
+  church: ['forms-app-web', '2026-tcchlife-pyramid', '2026-twyp-chlife'],
+  'line-cards': ['line-tools', 'line-signup', 'line-link-card', 'line-love-letter', 'fulltime-weekly-report'],
+  music: ['isaiahs-garden', 'numbered-score-studio'],
+  family: ['family-story-365', 'gospel-tracts-animation', 'curd-honey-bible-journey'],
+};
+const rank = (order, id) => order.includes(id) ? order.indexOf(id) : order.length;
 const groups = [...hub.categories.map((g) => ({ ...g, items: g.items.filter((i) => i.id !== 'toolbox') })),
-  { title: '社群連結', items: hub.social },
-  { title: '網站資訊', items: Object.values(hub.footer) }];
+  { id: 'social', title: '社群連結', items: hub.social },
+  { id: 'info', title: '網站資訊', items: Object.entries(hub.footer).map(([id, item]) => ({ ...item, id })) }];
+groups.sort((a, b) => rank(categoryOrder, a.id) - rank(categoryOrder, b.id));
+for (const group of groups) {
+  const order = itemOrder[group.id] || [];
+  group.items = [...group.items].sort((a, b) => rank(order, a.id) - rank(order, b.id));
+}
 const tools = groups.flatMap((g) => g.items);
 const resolved = (url, page) => new URL(url, new URL('../', page.url())).href;
 
@@ -56,7 +72,50 @@ function json(route, obj) {
   });
 }
 
-test.describe('台中全時間百寶箱', () => {
+test.describe('台中全時間服事百寶箱', () => {
+  test.beforeEach(async ({ page }) => {
+    // 預設攔截 config 與假 API；個別案例可覆寫 mock。
+    await useFakeApi(page, (route) => json(route, { ok: true, items: [] }));
+  });
+  test('categories expand by default and toggle accessibly without affecting submission', async ({ page }) => {
+    await page.goto('/toolbox/', { waitUntil: 'networkidle' });
+    const categories = page.locator('#builtin .category');
+    await expect(categories).toHaveCount(7);
+    await page.locator('#f-name').fill('保留表單內容');
+    for (const category of await categories.all()) {
+      const toggle = category.locator('h2').getByRole('button');
+      await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+      const list = category.locator('ol');
+      await expect(list).toBeVisible();
+      const bounds = await toggle.boundingBox();
+      expect(bounds.height).toBeGreaterThanOrEqual(44);
+      await expect(toggle).toHaveAttribute('aria-controls', await list.getAttribute('id'));
+      await toggle.click();
+      await expect(category.locator('h2').getByRole('button')).toHaveAttribute('aria-expanded', 'false');
+      await expect(list).toBeHidden();
+      await expect(page.locator('#submit-form')).toBeVisible();
+      await toggle.click();
+      await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+      await expect(list).toBeVisible();
+    }
+    const first = categories.first().locator('h2').getByRole('button');
+    await first.focus();
+    await expect(first).toBeFocused();
+    expect(await first.evaluate(el => getComputedStyle(el).outlineStyle)).not.toBe('none');
+    await page.keyboard.press('Enter');
+    await expect(first).toHaveAttribute('aria-expanded', 'false');
+    await expect(categories.first().locator('ol')).toBeHidden();
+    await page.keyboard.press('Space');
+    await expect(first).toHaveAttribute('aria-expanded', 'true');
+    await expect(categories.first().locator('ol')).toBeVisible();
+    for (const category of await categories.all()) await category.locator('h2').getByRole('button').click();
+    await expect(page.locator('#builtin ol:visible')).toHaveCount(0);
+    await expect(page.locator('#submit-form')).toBeVisible();
+    await expect(page.locator('#f-name')).toHaveValue('保留表單內容');
+    await page.locator('#send').click();
+    await expect(page.locator('#form-error')).toHaveText('請填寫網址。');
+  });
+
   test('loads, links, manifest, icons, service worker, screenshots', async ({ page, context }, testInfo) => {
     await context.grantPermissions(['clipboard-read', 'clipboard-write']);
     const external = [];
@@ -64,8 +123,8 @@ test.describe('台中全時間百寶箱', () => {
 
     const resp = await page.goto('/toolbox/', { waitUntil: 'networkidle' });
     expect(resp && resp.ok()).toBeTruthy();
-    await expect(page).toHaveTitle('台中全時間百寶箱');
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('台中全時間百寶箱');
+    await expect(page).toHaveTitle('台中全時間服事百寶箱');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('台中全時間服事百寶箱');
 
     const cards = await expectBuiltins(page);
     for (let i = 0; i < 3; i++) {
@@ -73,12 +132,11 @@ test.describe('台中全時間百寶箱', () => {
       expect(openBox.height).toBeGreaterThanOrEqual(56);
     }
 
-    // 未設定 API_URL：不發後端請求，新增連結暫未開放
-    await expect(page.locator('#submit-closed')).toBeVisible();
-    await expect(page.locator('#submit-closed')).toHaveText('新增連結暫未開放。');
-    await expect(page.locator('#submit-form')).toBeHidden();
+    // API 已開放，推薦清單與投稿皆由 route mock 隔離
+    await expect(page.locator('#submit-closed')).toBeHidden();
+    await expect(page.locator('#submit-form')).toBeVisible();
     await expect(page.locator('#shared')).toBeHidden();
-    expect(external).toEqual([]);
+    expect(external.every((url) => url.startsWith(FAKE_API))).toBeTruthy();
 
     // copy button
     await cards.nth(1).locator('button.btn-copy').click();
@@ -112,8 +170,8 @@ test.describe('台中全時間百寶箱', () => {
     const mres = await page.request.get(manifestUrl);
     expect(mres.ok()).toBeTruthy();
     const manifest = JSON.parse(await mres.text());
-    expect(manifest.name).toBe('台中全時間百寶箱');
-    expect(manifest.short_name).toBe('全時間百寶箱');
+    expect(manifest.name).toBe('台中全時間服事百寶箱');
+    expect(manifest.short_name).toBe('服事百寶箱');
     expect(manifest.start_url).toBe('/toolbox/');
     expect(manifest.scope).toBe('/toolbox/');
     expect(manifest.display).toBe('standalone');
@@ -127,7 +185,7 @@ test.describe('台中全時間百寶箱', () => {
     // iOS
     const apple = await page.locator('link[rel="apple-touch-icon"]').getAttribute('href');
     expect((await page.request.get(new URL(apple, page.url()).href)).ok()).toBeTruthy();
-    await expect(page.locator('meta[name="apple-mobile-web-app-title"]')).toHaveAttribute('content', '全時間百寶箱');
+    await expect(page.locator('meta[name="apple-mobile-web-app-title"]')).toHaveAttribute('content', '服事百寶箱');
 
     // icon files on disk (+ hub card icon)
     for (const f of ['signup.svg', 'link-card.svg', 'love-letter.svg', 'app-icon.svg',
@@ -161,8 +219,12 @@ test.describe('台中全時間百寶箱', () => {
 
   test('new homepage links follow automatically and resolve from the root', async ({ page }) => {
     const updated = structuredClone(hub);
-    updated.categories[0].items.push({ title: '新增測試工具', description: '共用資料自動更新', url: 'new-tool/' });
-    updated.categories[0].items.push({ title: '自身別名', url: 'toolbox/index.html' });
+    updated.categories.reverse();
+    for (const group of updated.categories) group.items.reverse();
+    const bible = updated.categories.find((g) => g.id === 'bible');
+    bible.items.unshift({ title: '新增測試工具', description: '共用資料自動更新', url: 'new-tool/' });
+    bible.items.push({ title: '自身別名', url: 'toolbox/index.html' });
+    updated.categories.unshift({ id: 'future', title: '新分類', items: [{ title: '未來工具', url: 'future/' }] });
     await page.route('**/links.json', (route) => json(route, updated));
     await page.goto('/toolbox/');
     const card = page.locator('#builtin li').filter({ hasText: '新增測試工具' });
@@ -170,13 +232,15 @@ test.describe('台中全時間百寶箱', () => {
     await expect(card.locator('.tool-desc')).toHaveText('共用資料自動更新');
     await expect(card.locator('a')).toHaveAttribute('href', new URL('/new-tool/', page.url()).href);
     await expect(page.locator('#builtin')).not.toContainText('自身別名');
+    await expect(page.locator('#builtin .category > h2')).toHaveText([...groups.map((g) => g.title), '新分類']);
+    await expect(page.locator('#builtin .category').first().locator('h3')).toHaveText([...groups[0].items.map((i) => i.title), '新增測試工具']);
   });
 
   test('homepage data failure is explained while the submission area remains available', async ({ page }) => {
     await page.route('**/links.json', (route) => route.abort());
     await page.goto('/toolbox/');
     await expect(page.locator('#builtin-status')).toContainText('目前無法讀取全部連結');
-    await expect(page.locator('#submit-closed')).toBeVisible();
+    await expect(page.locator('#submit-closed')).toBeHidden();
   });
 
   test('source files have no cross glyphs or emoji', async ({}, testInfo) => {
@@ -324,9 +388,9 @@ test.describe('台中全時間百寶箱', () => {
     await page.goto('/', { waitUntil: 'networkidle' });
     const card = page.locator('a.card[href="toolbox/"]');
     await expect(card).toHaveCount(1);
-    await expect(card).toContainText('台中全時間百寶箱');
+    await expect(card).toContainText('台中全時間服事百寶箱');
     await card.click();
     await expect(page).toHaveURL(/\/toolbox\/$/);
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('台中全時間百寶箱');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('台中全時間服事百寶箱');
   });
 });

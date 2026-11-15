@@ -1,4 +1,4 @@
-# 台中全時間百寶箱後端（Google Apps Script）
+# 台中全時間服事百寶箱後端（Google Apps Script）
 
 前端：`toolbox/`（https://isaiahovercomer.github.io/toolbox/）。這裡是後端原始碼，**不含任何密碼、金鑰或 Sheet ID**。
 此資料夾不必部署到 GitHub Pages，只是方便交接；實際用 clasp 推送時，建議複製到 repo 外的 `/workspace/toolbox-script/`。
@@ -7,7 +7,7 @@
 
 已在 Isaiah 既有的 clasp 登入下完成：
 
-- 建立新專案「台中全時間百寶箱後端」（沒有改到既有的四個專案）
+- 建立新專案「台中全時間服事百寶箱後端」（沒有改到既有的四個專案）
 - 編輯器：https://script.google.com/d/1zCO0xuEX7of-_WifKqUkNS4B09T1LHaxfDQuzPk2NjaDbQhM5Ys-f1Kj/edit
 - 已 `clasp push` 上傳 `Code.gs`、`Admin.html`、`appsscript.json`
 - 已用 clasp 建立一個版本部署（說明 v1）。但公開 `/exec` 目前仍回 Access Denied，而且 `setup()` 還沒在瀏覽器授權、也還沒設定 `ADMIN_PASSWORD`，所以前端的 `API_URL` 先留空，頁面顯示「新增連結暫未開放。」
@@ -46,12 +46,12 @@
    mkdir -p /workspace/toolbox-script
    cp backend/toolbox-script/Code.gs backend/toolbox-script/Admin.html backend/toolbox-script/appsscript.json /workspace/toolbox-script/
    cd /workspace/toolbox-script
-   clasp create --type standalone --title "台中全時間百寶箱後端"
+   clasp create --type standalone --title "台中全時間服事百寶箱後端"
    clasp push -f
    clasp open-script   # 用瀏覽器打開專案
    ```
    （`clasp create` 會產生 `.clasp.json`，裡面只有 scriptId，可以保留。`~/.clasprc.json` 是登入憑證，不可複製進任何 repo。）
-2. **執行 setup 並授權**：在 Apps Script 編輯器上方選函式 `setup` →「執行」→ 出現「需要授權」時選自己的帳號 →「進階」→「前往（不安全）」→「允許」。執行完成後，雲端硬碟會多一個試算表「台中全時間百寶箱投稿」，`SHEET_ID` 和 `ADMIN_EMAIL` 會自動寫入指令碼屬性。
+2. **執行 setup 並授權**：在 Apps Script 編輯器上方選函式 `setup` →「執行」→ 出現「需要授權」時選自己的帳號 →「進階」→「前往（不安全）」→「允許」。執行完成後，雲端硬碟會多一個試算表「台中全時間服事百寶箱投稿」，`SHEET_ID` 和 `ADMIN_EMAIL` 會自動寫入指令碼屬性。
 3. **設定管理密碼**：左側「專案設定」（齒輪）→ 最下面「指令碼屬性」→「編輯指令碼屬性」→ 新增屬性 `ADMIN_PASSWORD`，值自己決定（建議 16 字以上，不要和 Google 密碼相同）→ 儲存。密碼不要寫在任何檔案、訊息或聊天裡。
 4. **部署網頁應用程式**：右上「部署」→「新增部署作業」→ 齒輪選「網頁應用程式」→ 說明填「v1」→「執行身分：我」→「誰可以存取：所有人」→「部署」→ 複製「網頁應用程式網址」（結尾是 `/exec`）。
 5. **接上前端**：把 `/exec` 網址填進 `toolbox/config.js` 的 `API_URL`，commit 後推上分支。

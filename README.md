@@ -33,7 +33,7 @@ GitHub 使用者網站的首頁，用來分類整理目前公開的網頁與工�
 
 ## 子頁 `toolbox/`
 
-「台中全時間百寶箱」：同樣三個 LINE 建立平台的大卡片（內建，永遠顯示），加上「新增連結」投稿區；投稿經管理者審核後才會出現在頁面上。可加到手機主畫面（PWA：`toolbox/manifest.webmanifest`、`toolbox/sw.js`，只快取本頁靜態檔，不快取 LIFF 與後端 API）。
+「台中全時間服事百寶箱」：同樣三個 LINE 建立平台的大卡片（內建，永遠顯示），加上「新增連結」投稿區；投稿經管理者審核後才會出現在頁面上。可加到手機主畫面（PWA：`toolbox/manifest.webmanifest`、`toolbox/sw.js`，只快取本頁靜態檔，不快取 LIFF 與後端 API）。
 
 - 後端網址設定在 `toolbox/config.js` 的 `API_URL`（Apps Script 網頁應用程式 `/exec`，不是金鑰）。留空時頁面照常顯示三個工具，「新增連結」顯示暫未開放。
 - 後端原始碼與部署、審核說明：[`backend/toolbox-script/README.md`](backend/toolbox-script/README.md)。密碼、Sheet ID 只存在 Apps Script 的指令碼屬性，不在 repo。

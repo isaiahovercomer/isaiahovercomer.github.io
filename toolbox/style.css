@@ -1,4 +1,4 @@
-/* 台中全時間百寶箱 — 手機優先、大字大按鈕，無十字架與 emoji（版型同 line/） */
+/* 台中全時間服事百寶箱 — 手機優先、大字大按鈕，無十字架與 emoji（版型同 line/） */
 :root {
   --bg: #F6F1E7;
   --ink: #26241F;
@@ -276,6 +276,30 @@ footer a { color: #385A7C; text-underline-offset: 4px; }
 }
 
 .category { margin-top: 32px; }
-.category > h2 { margin: 0; font-size: 26px; border-bottom: 2px solid #CFDDCC; padding-bottom: 8px; }
+.category > h2 { margin: 0; font-size: 26px; border-bottom: 2px solid #CFDDCC; }
+.category-toggle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 4px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.category-toggle::before {
+  content: '';
+  flex: 0 0 auto;
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+  border-left: 10px solid #3A6848;
+}
+.category-toggle[aria-expanded="true"]::before { transform: rotate(90deg); }
+.category-toggle:focus { outline: 3px solid #3A6848; outline-offset: 3px; }
+.category .tools[hidden] { display: none; }
 .category .tools { margin-top: 16px; }
 .tool { overflow-wrap: anywhere; }
