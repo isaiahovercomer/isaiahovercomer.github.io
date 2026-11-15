@@ -77,6 +77,137 @@ test.describe('台中全時間服事百寶箱', () => {
     // 預設攔截 config 與假 API；個別案例可覆寫 mock。
     await useFakeApi(page, (route) => json(route, { ok: true, items: [] }));
   });
+  // Keep service-worker fetches from bypassing config/API routes on subsequent loads.
+  test.describe('computed contrast', () => {
+    test.use({ serviceWorkers: 'block' });
+    // Catch unreadable text, including translucent backgrounds and control states.
+    test('all visible text has computed contrast of at least 4.5:1', async ({ page }, testInfo) => {
+      await useFakeApi(page, (route, req) => json(route, req.method() === 'POST'
+        ? { ok: true } : { ok: true, items: [{ name: '推薦工具', description: '已審核說明', url: 'https://example.org/' }] }));
+      await page.goto('/toolbox/', { waitUntil: 'networkidle' });
+      await expect(page.locator('#builtin .category')).toHaveCount(7);
+      const results = [];
+      async function check(state) {
+        const rows = await page.evaluate(() => {
+          const rgba = (s) => s.match(/[\d.]+/g).map(Number);
+          const over = (fg, bg) => {
+            const a = fg[3] ?? 1;
+            return fg.slice(0, 3).map((v, i) => v * a + bg[i] * (1 - a));
+          };
+          function background(el) {
+            if (!el) return [255, 255, 255];
+            const style = getComputedStyle(el);
+            // Nonuniform backgrounds need pixel sampling; fail instead of silently ignoring them.
+            if (style.backgroundImage !== 'none') throw new Error('Unsupported background image: ' + el.tagName);
+            return over(rgba(style.backgroundColor), background(el.parentElement));
+          }
+          const lum = (rgb) => rgb.map(v => {
+            v /= 255;
+            return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+          }).reduce((sum, v, i) => sum + v * [0.2126, 0.7152, 0.0722][i], 0);
+          const rows = [];
+          for (const el of document.body.querySelectorAll('*')) {
+            const style = getComputedStyle(el);
+            const rect = el.getBoundingClientRect();
+            if (!el.checkVisibility({ checkOpacity: true, checkVisibilityCSS: true }) || !rect.width || !rect.height || rect.right <= 0 || rect.left >= innerWidth) continue;
+            const texts = [...el.childNodes].filter(n => n.nodeType === Node.TEXT_NODE && n.textContent.trim()).map(n => n.textContent.trim());
+            if (el.matches('input, textarea') && el.value) texts.push(el.value);
+            const variants = texts.map(text => ({ text, color: style.color, opacity: 1 }));
+            if (el.matches('input, textarea') && !el.value && el.placeholder) {
+              const placeholder = getComputedStyle(el, '::placeholder');
+              variants.push({ text: el.placeholder, color: placeholder.color, opacity: Number(placeholder.opacity) });
+            }
+            for (const item of variants) {
+              let fg = rgba(item.color);
+              fg[3] = (fg[3] ?? 1) * item.opacity;
+              let bg = background(el);
+              fg = over(fg, bg);
+              // Group opacity composites both text and its background onto the parent.
+              for (let node = el; node; node = node.parentElement) {
+                const computed = getComputedStyle(node);
+                if (computed.filter !== 'none') {
+                  const match = computed.filter.match(/^brightness\(([\d.]+)(%)?\)$/);
+                  if (!match) throw new Error('Unsupported filter: ' + computed.filter);
+                  const brightness = Number(match[1]) / (match[2] ? 100 : 1);
+                  fg = fg.map(v => Math.min(255, v * brightness));
+                  bg = bg.map(v => Math.min(255, v * brightness));
+                }
+                const opacity = Number(computed.opacity);
+                if (opacity < 1) {
+                  const under = background(node.parentElement);
+                  fg = over([...fg, opacity], under);
+                  bg = over([...bg, opacity], under);
+                }
+              }
+              const a = lum(fg), b = lum(bg);
+              rows.push({ text: item.text, ratio: (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05) });
+            }
+          }
+          return rows;
+        });
+        expect(rows.length).toBeGreaterThan(0);
+        for (const row of rows) expect(row.ratio, `${state}: ${row.text}`).toBeGreaterThanOrEqual(4.5);
+        results.push(...rows);
+      }
+      await check('default');
+      for (const el of await page.locator('button:visible, a:visible, input:visible:not(#f-website), textarea:visible').all()) {
+        await page.keyboard.press('Tab');
+        await el.focus();
+        await check('focus');
+        await el.hover();
+        await check('hover');
+        await page.mouse.down();
+        await page.waitForTimeout(180); // .btn's 150ms brightness transition must settle.
+        await check('active');
+        await page.mouse.move(0, 0);
+        await page.mouse.up();
+      }
+      await page.locator('#builtin .btn-copy').first().click();
+      await check('copy feedback');
+      await page.locator('.category-toggle').first().click();
+      await check('collapsed category');
+      await page.locator('.category-toggle').first().click();
+      await page.locator('#send').click();
+      await check('validation error');
+      await page.locator('#f-name').fill('測試名稱');
+      await page.locator('#f-url').fill('https://example.org/');
+      await page.locator('#f-desc').fill('測試說明');
+      await check('filled inputs');
+      // Keep the mocked POST pending to inspect the real disabled sending state.
+      let release;
+      const pending = new Promise(resolve => { release = resolve; });
+      await page.route('https://toolbox-api.example/**', async route => {
+        await pending;
+        await json(route, { ok: true });
+      });
+      await page.locator('#send').click();
+      await expect(page.locator('#send')).toBeDisabled();
+      await check('sending');
+      release();
+      await expect(page.locator('#form-status')).toContainText('已送出');
+      await check('success');
+      await page.evaluate(() => window.dispatchEvent(new Event('beforeinstallprompt', { cancelable: true })));
+      await check('install button');
+      await page.route('**/toolbox/config.js', route => route.fulfill({ contentType: 'application/javascript', body: 'window.TOOLBOX_CONFIG = {};' }));
+      await page.route('**/links.json', route => route.abort());
+      await page.goto('/toolbox/', { waitUntil: 'networkidle' });
+      await expect(page.locator('#submit-closed')).toBeVisible();
+      await expect(page.locator('#builtin-status')).toContainText('目前無法讀取');
+      await check('closed form and loading failure');
+      const minimum = Math.min(...results.map(r => r.ratio));
+      console.log(`CONTRAST ${testInfo.project.name}: minimum=${minimum.toFixed(6)}, samples=${results.length}`);
+    });
+
+  });
+
+  test('category palettes and card shades apply automatically', async ({ page }) => {
+    await page.goto('/toolbox/', { waitUntil: 'networkidle' });
+    const colors = await page.locator('#builtin .category').evaluateAll(sections => sections.map(section =>
+      [...section.querySelectorAll('.tool')].map(card => getComputedStyle(card).backgroundColor)));
+    expect(new Set(colors.map(group => group[0])).size).toBe(colors.length);
+    for (const group of colors) expect(new Set(group).size).toBe(group.length);
+  });
+
   test('categories expand by default and toggle accessibly without affecting submission', async ({ page }) => {
     await page.goto('/toolbox/', { waitUntil: 'networkidle' });
     const categories = page.locator('#builtin .category');
@@ -232,6 +363,11 @@ test.describe('台中全時間服事百寶箱', () => {
     await expect(card.locator('.tool-desc')).toHaveText('共用資料自動更新');
     await expect(card.locator('a')).toHaveAttribute('href', new URL('/new-tool/', page.url()).href);
     await expect(page.locator('#builtin')).not.toContainText('自身別名');
+    const addedColor = await card.evaluate(el => getComputedStyle(el).backgroundColor);
+    const firstColor = await page.locator('#builtin .tool').first().evaluate(el => getComputedStyle(el).backgroundColor);
+    expect(addedColor).not.toBe(firstColor);
+    const futureColor = await page.locator('#builtin .category').last().locator('.tool').evaluate(el => getComputedStyle(el).backgroundColor);
+    expect(futureColor).not.toBe(firstColor);
     await expect(page.locator('#builtin .category > h2')).toHaveText([...groups.map((g) => g.title), '新分類']);
     await expect(page.locator('#builtin .category').first().locator('h3')).toHaveText([...groups[0].items.map((i) => i.title), '新增測試工具']);
   });

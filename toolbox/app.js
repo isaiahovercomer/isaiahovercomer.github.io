@@ -137,20 +137,29 @@
           .filter(([, item]) => item && item.url).map(([id, item]) => ({ ...item, id })) },
       ];
       const sections = [];
-      for (const group of ordered(groups, CATEGORY_ORDER)) {
+      for (const [categoryIndex, group] of ordered(groups, CATEGORY_ORDER).entries()) {
+        // Distinct color families in display order; future categories also receive a hue.
+        const hues = [145, 282, 60, 197, 335, 25, 250];
+        const hue = hues[categoryIndex] ?? (145 + categoryIndex * 137.508) % 360;
         const cards = [];
         for (const item of ordered(group.items, ITEM_ORDER[group.id] || [])) {
           const url = new URL(item.url, root);
           if (!/^https?:$/.test(url.protocol)) continue;
           if (url.origin === self.origin && url.pathname.replace(/index\.html$/, '').replace(/\/$/, '') === self.pathname.replace(/\/$/, '')) continue;
           const card = makeCard({ name: item.title, description: item.description || '', url: url.href });
-          card.className = 'tool tool-signup';
+          card.className = 'tool tool-builtin';
+          const index = cards.length;
+          const shade = (index * 0.618034) % 1;
+          card.style.setProperty('--tone', `hsl(${hue + shade * 8 - 4} 42% ${94 - shade * 6}%)`);
           card.querySelector('h2').replaceWith(Object.assign(document.createElement('h3'), { textContent: item.title }));
           cards.push(card);
         }
         if (!cards.length) continue;
         const section = document.createElement('section');
         section.className = 'category';
+        section.style.setProperty('--accent', `hsl(${hue} 40% 28%)`);
+        section.style.setProperty('--accent-ink', `hsl(${hue} 42% 19%)`);
+        section.style.setProperty('--edge', `hsl(${hue} 32% 70%)`);
         const heading = document.createElement('h2');
         const toggle = document.createElement('button');
         toggle.type = 'button';
