@@ -3,5 +3,5 @@
 // 留空字串時：不讀取投稿清單，「新增連結」顯示暫未開放。
 // 這個檔不可放任何密碼或金鑰。
 window.TOOLBOX_CONFIG = {
-  API_URL: '',
+  API_URL: 'https://script.google.com/macros/s/AKfycbxmntmeICSgw1T6nrEKaNHBQ3UcpcZKPNt1K462YtUkCUYNo548VBseVxPd-uwoIAgluA/exec',
 };
