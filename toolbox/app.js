@@ -106,6 +106,49 @@
     return li;
   }
 
+  /* ---------- 首頁共用連結 ---------- */
+  async function loadBuiltins() {
+    const message = document.getElementById('builtin-status');
+    try {
+      const data = await fetchJson('../links.json', 10000);
+      const root = new URL('../', location.href);
+      const self = new URL('./', location.href);
+      const groups = [
+        ...data.categories,
+        { title: '社群連結', items: data.social || [] },
+        { title: '網站資訊', items: Object.values(data.footer || {}).filter((item) => item && item.url) },
+      ];
+      const sections = [];
+      for (const group of groups) {
+        const cards = [];
+        for (const item of group.items) {
+          const url = new URL(item.url, root);
+          if (!/^https?:$/.test(url.protocol)) continue;
+          if (url.origin === self.origin && url.pathname.replace(/index\.html$/, '').replace(/\/$/, '') === self.pathname.replace(/\/$/, '')) continue;
+          const card = makeCard({ name: item.title, description: item.description || '', url: url.href });
+          card.className = 'tool tool-signup';
+          card.querySelector('h2').replaceWith(Object.assign(document.createElement('h3'), { textContent: item.title }));
+          cards.push(card);
+        }
+        if (!cards.length) continue;
+        const section = document.createElement('section');
+        section.className = 'category';
+        const heading = document.createElement('h2');
+        heading.textContent = group.title;
+        const list = document.createElement('ol');
+        list.className = 'tools';
+        list.append(...cards);
+        section.append(heading, list);
+        sections.push(section);
+      }
+      document.getElementById('builtin').replaceChildren(...sections);
+      message.textContent = '';
+    } catch (e) {
+      message.textContent = '目前無法讀取全部連結，請確認網路後重新整理。';
+    }
+  }
+  loadBuiltins();
+
   function renderShared(data) {
     const rows = Array.isArray(data && data.items) ? data.items : [];
     const items = [];
@@ -162,7 +205,7 @@
       })
       .catch(() => {
         shared.hidden = true;
-        listStatus.textContent = '目前無法讀取推薦連結，上面三個工具仍可正常使用。';
+        listStatus.textContent = '目前無法讀取推薦連結，上方首頁連結仍可正常使用。';
       });
   }
 

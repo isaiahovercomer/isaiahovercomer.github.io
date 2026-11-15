@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>台中全時間百寶箱</title>
-  <meta name="description" content="台中全時間常用工具與連結：LINE活動登記、網頁圖卡、流通愛圖卡，並可投稿好用連結，經審核後顯示。" />
+  <meta name="description" content="依分類彙整台中全時間常用工具與全部首頁連結，並可投稿好用連結，經審核後顯示。" />
   <meta name="theme-color" content="#F6F1E7" />
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" href="img/app-icon.svg" type="image/svg+xml" />
@@ -29,43 +29,8 @@
     </header>
 
     <main>
-      <ol class="tools" id="builtin">
-        <li class="tool tool-signup">
-          <div class="tool-head">
-            <img src="img/signup.svg" alt="" width="72" height="72" />
-            <h2><span class="num">1</span>LINE簡易活動登記建立平台</h2>
-          </div>
-          <p class="tool-desc">群組內登記活動、愛筵帶菜、帶人接龍累計。年長聖徒可以一鍵登記。</p>
-          <div class="actions">
-            <a class="btn btn-open" href="https://liff.line.me/2012412693-a7phfbWa" aria-label="打開 LINE簡易活動登記建立平台">打開</a>
-            <button class="btn btn-copy" type="button" data-url="https://liff.line.me/2012412693-a7phfbWa" aria-label="複製 LINE簡易活動登記建立平台 網址">複製網址</button>
-          </div>
-        </li>
-
-        <li class="tool tool-card">
-          <div class="tool-head">
-            <img src="img/link-card.svg" alt="" width="72" height="72" />
-            <h2><span class="num">2</span>LINE網頁圖卡分享建立平台</h2>
-          </div>
-          <p class="tool-desc">增加分享單一網址的顯眼可讀性，同時可在裡面填上行動資訊，自動產生邀請卡。</p>
-          <div class="actions">
-            <a class="btn btn-open" href="https://liff.line.me/2012412693-IKxGZtWK" aria-label="打開 LINE網頁圖卡分享建立平台">打開</a>
-            <button class="btn btn-copy" type="button" data-url="https://liff.line.me/2012412693-IKxGZtWK" aria-label="複製 LINE網頁圖卡分享建立平台 網址">複製網址</button>
-          </div>
-        </li>
-
-        <li class="tool tool-love">
-          <div class="tool-head">
-            <img src="img/love-letter.svg" alt="" width="72" height="72" />
-            <h2><span class="num">3</span>LINE流通愛圖卡建立平台</h2>
-          </div>
-          <p class="tool-desc">推動題名代禱後下一步在LINE上寫封問候信關心小羊福友，聖徒們也可以彼此牧養。</p>
-          <div class="actions">
-            <a class="btn btn-open" href="https://liff.line.me/2012412693-IhnpCNtr" aria-label="打開 LINE流通愛圖卡建立平台">打開</a>
-            <button class="btn btn-copy" type="button" data-url="https://liff.line.me/2012412693-IhnpCNtr" aria-label="複製 LINE流通愛圖卡建立平台 網址">複製網址</button>
-          </div>
-        </li>
-      </ol>
+      <div id="builtin" aria-label="全部連結"></div>
+      <p id="builtin-status" class="list-status" role="status">正在讀取全部連結…</p>
 
       <section class="shared" id="shared" aria-labelledby="shared-title" hidden>
         <h2 id="shared-title">弟兄姊妹推薦的連結</h2>

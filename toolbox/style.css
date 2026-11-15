@@ -96,7 +96,7 @@ h1 { margin: 0; font-size: 28px; line-height: 1.4; letter-spacing: 0.02em; }
   border-radius: 18px;
   box-shadow: 0 2px 8px rgba(38, 36, 31, 0.12);
 }
-.tool h2 {
+.tool h2, .tool h3 {
   margin: 0;
   font-size: 23px;
   line-height: 1.4;
@@ -274,3 +274,8 @@ footer a { color: #385A7C; text-underline-offset: 4px; }
 @media (prefers-reduced-motion: no-preference) {
   .btn { transition: filter 0.15s ease, background-color 0.15s ease; }
 }
+
+.category { margin-top: 32px; }
+.category > h2 { margin: 0; font-size: 26px; border-bottom: 2px solid #CFDDCC; padding-bottom: 8px; }
+.category .tools { margin-top: 16px; }
+.tool { overflow-wrap: anywhere; }

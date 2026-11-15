@@ -9,26 +9,26 @@ const forbidden = /[✝✞✟†☦✠⛪☧☨☩]/u;
 const emoji = /\p{Extended_Pictographic}/u;
 const FAKE_API = 'https://toolbox-api.example/exec';
 
-const tools = [
-  { title: 'LINE簡易活動登記建立平台', url: 'https://liff.line.me/2012412693-a7phfbWa',
-    desc: '群組內登記活動、愛筵帶菜、帶人接龍累計。年長聖徒可以一鍵登記。' },
-  { title: 'LINE網頁圖卡分享建立平台', url: 'https://liff.line.me/2012412693-IKxGZtWK',
-    desc: '增加分享單一網址的顯眼可讀性，同時可在裡面填上行動資訊，自動產生邀請卡。' },
-  { title: 'LINE流通愛圖卡建立平台', url: 'https://liff.line.me/2012412693-IhnpCNtr',
-    desc: '推動題名代禱後下一步在LINE上寫封問候信關心小羊福友，聖徒們也可以彼此牧養。' },
-];
+const hub = require('../links.json');
+const groups = [...hub.categories.map((g) => ({ ...g, items: g.items.filter((i) => i.id !== 'toolbox') })),
+  { title: '社群連結', items: hub.social },
+  { title: '網站資訊', items: Object.values(hub.footer) }];
+const tools = groups.flatMap((g) => g.items);
+const resolved = (url, page) => new URL(url, new URL('../', page.url())).href;
 
 async function expectBuiltins(page) {
-  const cards = page.locator('#builtin > li.tool');
-  await expect(cards).toHaveCount(3);
+  const cards = page.locator('#builtin li.tool');
+  await expect(cards).toHaveCount(tools.length);
+  await expect(page.locator('#builtin .category > h2')).toHaveText(groups.map((g) => g.title));
   for (const [i, t] of tools.entries()) {
     const card = cards.nth(i);
-    await expect(card.locator('h2')).toHaveText(`${i + 1}${t.title}`);
-    await expect(card.locator('.tool-desc')).toHaveText(t.desc);
-    await expect(card.locator('a.btn-open')).toHaveAttribute('href', t.url);
-    await expect(card.locator('a.btn-open')).toHaveText('打開');
-    await expect(card.locator('button.btn-copy')).toHaveAttribute('data-url', t.url);
+    await expect(card.locator('h3')).toHaveText(t.title);
+    await expect(card.locator('.tool-desc')).toHaveText(t.description || '');
+    await expect(card.locator('a.btn-open')).toHaveAttribute('href', resolved(t.url, page));
+    await expect(card.locator('button.btn-copy')).toHaveAttribute('data-url', resolved(t.url, page));
   }
+  await expect(page.locator('#builtin a[href$="/toolbox/"]')).toHaveCount(0);
+  await expect(page.locator('#builtin img, a[href^="mailto:"]')).toHaveCount(0);
   return cards;
 }
 
@@ -69,8 +69,6 @@ test.describe('台中全時間百寶箱', () => {
 
     const cards = await expectBuiltins(page);
     for (let i = 0; i < 3; i++) {
-      const img = cards.nth(i).locator('.tool-head img');
-      await expect.poll(() => img.evaluate((el) => el.complete && el.naturalWidth > 0)).toBeTruthy();
       const openBox = await cards.nth(i).locator('a.btn-open').boundingBox();
       expect(openBox.height).toBeGreaterThanOrEqual(56);
     }
@@ -161,6 +159,26 @@ test.describe('台中全時間百寶箱', () => {
     await page.screenshot({ path: path.join(shotsDir, name), fullPage: true });
   });
 
+  test('new homepage links follow automatically and resolve from the root', async ({ page }) => {
+    const updated = structuredClone(hub);
+    updated.categories[0].items.push({ title: '新增測試工具', description: '共用資料自動更新', url: 'new-tool/' });
+    updated.categories[0].items.push({ title: '自身別名', url: 'toolbox/index.html' });
+    await page.route('**/links.json', (route) => json(route, updated));
+    await page.goto('/toolbox/');
+    const card = page.locator('#builtin li').filter({ hasText: '新增測試工具' });
+    await expect(card.locator('h3')).toHaveText('新增測試工具');
+    await expect(card.locator('.tool-desc')).toHaveText('共用資料自動更新');
+    await expect(card.locator('a')).toHaveAttribute('href', new URL('/new-tool/', page.url()).href);
+    await expect(page.locator('#builtin')).not.toContainText('自身別名');
+  });
+
+  test('homepage data failure is explained while the submission area remains available', async ({ page }) => {
+    await page.route('**/links.json', (route) => route.abort());
+    await page.goto('/toolbox/');
+    await expect(page.locator('#builtin-status')).toContainText('目前無法讀取全部連結');
+    await expect(page.locator('#submit-closed')).toBeVisible();
+  });
+
   test('source files have no cross glyphs or emoji', async ({}, testInfo) => {
     test.skip(testInfo.project.name !== 'desktop', 'file scan once');
     for (const f of ['index.html', 'style.css', 'app.js', 'config.js', 'sw.js', 'manifest.webmanifest',
@@ -211,7 +229,7 @@ test.describe('台中全時間百寶箱', () => {
 
       // built-ins come first
       const firstShared = await shared.nth(0).boundingBox();
-      const lastBuiltin = await page.locator('#builtin > li.tool').nth(2).boundingBox();
+      const lastBuiltin = await page.locator('#builtin li.tool').last().boundingBox();
       expect(firstShared.y).toBeGreaterThan(lastBuiltin.y);
 
       await expect(page.locator('#submit-form')).toBeVisible();
