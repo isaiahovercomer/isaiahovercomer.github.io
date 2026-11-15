@@ -31,6 +31,23 @@ GitHub 使用者網站的首頁，用來分類整理目前公開的網頁與工�
 
 「召會生活實行常用LINE功能整理」：三個 LINE 建立平台（活動登記、網頁圖卡、流通愛圖卡）的大卡片入口，可加到手機主畫面（PWA：`line/manifest.webmanifest`、`line/sw.js` 只快取本頁靜態檔）。各平台圖示複製自各自的 repo（`line/img/`）；整合圖示原檔為 `line/img/app-icon.svg`，PNG 以 Chromium 轉出。
 
+## 子頁 `toolbox/`
+
+「台中全時間服事百寶箱」：同樣三個 LINE 建立平台的大卡片（內建，永遠顯示），加上「新增連結」投稿區；投稿經管理者審核後才會出現在頁面上。可加到手機主畫面（PWA：`toolbox/manifest.webmanifest`、`toolbox/sw.js`，只快取本頁靜態檔，不快取 LIFF 與後端 API）。
+
+- 後端網址設定在 `toolbox/config.js` 的 `API_URL`（Apps Script 網頁應用程式 `/exec`，不是金鑰）。留空時頁面照常顯示三個工具，「新增連結」顯示暫未開放。
+- 後端原始碼與部署、審核說明：[`backend/toolbox-script/README.md`](backend/toolbox-script/README.md)。密碼、Sheet ID 只存在 Apps Script 的指令碼屬性，不在 repo。
+- 圖示原檔 `toolbox/img/app-icon.svg`；PNG（含首頁卡片圖示 `img/sites/toolbox.png`）用 `node scripts/render-toolbox-icons.js` 以 Chromium 轉出。
+
+## 測試
+
+先另開一個本機伺服器，再跑 Playwright（最多 2 workers）：
+
+```bash
+python3 -m http.server 18821 --bind 127.0.0.1 &
+HUB_PORT=18821 npm test
+```
+
 ## 本機預覽
 
 ```bash

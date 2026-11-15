@@ -72,6 +72,13 @@
           "url": "https://isaiahovercomer.github.io/2026-tcchlife-pyramid/",
           "id": "2026-tcchlife-pyramid",
           "icon": "img/sites/2026-tcchlife-pyramid.png"
+        },
+        {
+          "title": "台中全時間服事百寶箱",
+          "description": "台中全時間常用工具與連結，可投稿、經審核後顯示。",
+          "url": "toolbox/",
+          "id": "toolbox",
+          "icon": "img/sites/toolbox.png"
         }
       ]
     },

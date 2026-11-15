@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+  <base target="_top" />
+  <meta charset="utf-8" />
+  <style>
+    body { margin: 0; font-family: "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif; font-size: 18px; line-height: 1.6; color: #26241F; background: #F6F1E7; }
+    .page { width: min(860px, calc(100% - 24px)); margin: 0 auto; padding: 20px 0 40px; }
+    h1 { font-size: 24px; margin: 0 0 12px; }
+    .box { background: #FFFCF7; border: 1px solid #E5DDCF; border-radius: 18px; padding: 16px; margin-bottom: 14px; }
+    input[type=password] { width: 100%; box-sizing: border-box; font: inherit; padding: 10px 12px; border: 2px solid #D8CFBF; border-radius: 12px; }
+    button { font: inherit; font-weight: 700; min-height: 46px; padding: 6px 16px; border-radius: 12px; border: 2px solid #3A6848; background: #3A6848; color: #fff; cursor: pointer; }
+    button.ghost { background: #fff; color: #3A6848; }
+    button.warn { background: #fff; color: #A2412F; border-color: #A2412F; }
+    button:disabled { opacity: .5; }
+    .tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+    .tabs button[aria-pressed=true] { background: #2E3D33; border-color: #2E3D33; }
+    .tabs button[aria-pressed=false] { background: #fff; color: #2E3D33; }
+    .item h2 { font-size: 20px; margin: 0; overflow-wrap: anywhere; }
+    .item .url { overflow-wrap: anywhere; font-size: 16px; }
+    .item .meta { color: #5F5A51; font-size: 15px; }
+    .item .acts { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+    .msg { min-height: 1.6em; font-weight: 700; color: #3A6848; }
+    .err { color: #A2412F; }
+    .bar { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <h1>台中全時間百寶箱｜投稿審核</h1>
+
+    <div class="box" id="login" hidden>
+      <p>請輸入管理密碼。</p>
+      <form id="login-form">
+        <input type="password" id="pw" autocomplete="current-password" aria-label="管理密碼" />
+        <p><button type="submit">登入</button></p>
+      </form>
+    </div>
+
+    <div id="panel" hidden>
+      <div class="bar">
+        <div class="tabs" role="group" aria-label="狀態">
+          <button type="button" data-tab="pending" aria-pressed="true">待審</button>
+          <button type="button" data-tab="approved" aria-pressed="false">已核准</button>
+          <button type="button" data-tab="rejected" aria-pressed="false">已退回</button>
+        </div>
+        <button type="button" class="ghost" id="logout">登出</button>
+      </div>
+      <div id="list"></div>
+    </div>
+
+    <p class="msg" id="msg" role="status"></p>
+  </div>
+
+  <script>
+    (function () {
+      var token = '';
+      var tab = 'pending';
+      var items = [];
+      var $ = function (id) { return document.getElementById(id); };
+      var labels = { pending: '待審', approved: '已核准', rejected: '已退回' };
+
+      function msg(text, bad) {
+        $('msg').textContent = text || '';
+        $('msg').className = bad ? 'msg err' : 'msg';
+      }
+      function call(fn, args) {
+        return new Promise(function (resolve, reject) {
+          var r = google.script.run.withSuccessHandler(resolve).withFailureHandler(function (e) { reject(e); });
+          r[fn].apply(r, args || []);
+        });
+      }
+      function fail(e) {
+        var text = (e && e.message) || '發生錯誤。';
+        if (/重新登入/.test(text)) { token = ''; showLogin(); }
+        msg(text, true);
+      }
+      function showLogin() { $('login').hidden = false; $('panel').hidden = true; }
+      function showPanel() { $('login').hidden = true; $('panel').hidden = false; load(); }
+
+      function load() {
+        msg('讀取中…');
+        call('adminList', [token]).then(function (res) { items = res.items || []; msg(''); render(); }).catch(fail);
+      }
+
+      function isHttp(u) { return /^https?:\/\//i.test(String(u)); }
+
+      function render() {
+        var list = $('list');
+        while (list.firstChild) list.removeChild(list.firstChild);
+        var rows = items.filter(function (r) { return r.status === tab; });
+        if (!rows.length) {
+          var empty = document.createElement('p');
+          empty.textContent = '目前沒有「' + labels[tab] + '」的連結。';
+          list.appendChild(empty);
+          return;
+        }
+        rows.forEach(function (r) {
+          var box = document.createElement('div');
+          box.className = 'box item';
+          var h = document.createElement('h2'); h.textContent = r.name; box.appendChild(h);
+          var u = document.createElement(isHttp(r.url) ? 'a' : 'span');
+          u.className = 'url'; u.textContent = r.url;
+          if (isHttp(r.url)) { u.setAttribute('href', r.url); u.setAttribute('target', '_blank'); u.setAttribute('rel', 'noopener noreferrer'); }
+          box.appendChild(u);
+          if (r.description) { var d = document.createElement('p'); d.textContent = r.description; box.appendChild(d); }
+          var m = document.createElement('div'); m.className = 'meta';
+          m.textContent = '投稿：' + r.created_at + (r.reviewed_at ? '｜審核：' + r.reviewed_at + '（' + r.reviewer + '）' : '');
+          box.appendChild(m);
+          var acts = document.createElement('div'); acts.className = 'acts';
+          if (r.status !== 'approved') acts.appendChild(btn('核准', '', function () { act('adminSetStatus', [token, r.id, 'approved'], '已核准。'); }));
+          if (r.status !== 'rejected') acts.appendChild(btn('退回', 'ghost', function () { act('adminSetStatus', [token, r.id, 'rejected'], '已退回。'); }));
+          acts.appendChild(btn('刪除', 'warn', function () {
+            if (confirm('確定要刪除「' + r.name + '」嗎？刪除後無法復原。')) act('adminDelete', [token, r.id], '已刪除。');
+          }));
+          box.appendChild(acts);
+          list.appendChild(box);
+        });
+      }
+
+      function btn(text, cls, onClick) {
+        var b = document.createElement('button');
+        b.type = 'button'; b.textContent = text; if (cls) b.className = cls;
+        b.addEventListener('click', onClick);
+        return b;
+      }
+
+      function act(fn, args, done) {
+        msg('處理中…');
+        call(fn, args).then(function () { msg(done); load(); }).catch(fail);
+      }
+
+      document.querySelectorAll('.tabs button').forEach(function (b) {
+        b.addEventListener('click', function () {
+          tab = b.getAttribute('data-tab');
+          document.querySelectorAll('.tabs button').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
+          render();
+        });
+      });
+
+      $('login-form').addEventListener('submit', function (ev) {
+        ev.preventDefault();
+        var pw = $('pw').value;
+        $('pw').value = '';
+        msg('登入中…');
+        call('adminLogin', [pw]).then(function (res) {
+          if (res && res.ok) { token = res.token; msg(''); showPanel(); } else { msg((res && res.error) || '登入失敗。', true); }
+        }).catch(fail);
+      });
+
+      $('logout').addEventListener('click', function () {
+        call('adminLogout', [token]).catch(function () {});
+        token = ''; items = []; showLogin(); msg('已登出。');
+      });
+
+      call('adminWhoami').then(function (res) {
+        if (res && res.ok) { token = res.token; showPanel(); } else { showLogin(); }
+      }).catch(function () { showLogin(); });
+    })();
+  </script>
+</body>
+</html>

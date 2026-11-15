@@ -3,3 +3,8 @@ package-lock.json
 test-results/
 playwright-report/
 playwright/.cache/
+# clasp 登入憑證絕不提交（.clasp.json 只有 scriptId，可提交）
+.clasprc.json
+**/.clasprc.json
+.env
+*.pem
