@@ -114,13 +114,24 @@
   const CATEGORY_ORDER = ['bible', 'church', 'line-cards', 'music', 'family', 'social', 'info'];
   const ITEM_ORDER = {
     bible: ['morning-revival-today-site', 'interlinear-bible'],
-    church: ['forms-app-web', '2026-tcchlife-pyramid', '2026-twyp-chlife'],
+    church: ['forms-app-web', '2026-tcchlife-pyramid', '2026-twyp-chlife', 'taichung-church-reports-site'],
     'line-cards': ['line-tools', 'line-signup', 'line-link-card', 'line-love-letter', 'fulltime-weekly-report'],
     music: ['isaiahs-garden', 'numbered-score-studio'],
     family: ['family-story-365', 'gospel-tracts-animation', 'curd-honey-bible-journey'],
     social: ['youtube', 'soundcloud', 'blog', 'facebook', 'instagram'],
     info: ['privacy', 'terms'],
   };
+
+  // 只在百寶箱顯示，不寫入首頁 links.json。
+  const EXTRA_TOOLS = [
+    {
+      categoryId: 'church',
+      id: 'taichung-church-reports-site',
+      title: '行動報導平台',
+      description: '建立與瀏覽台中市召會的行動報導。',
+      url: 'https://isaiahovercomer.github.io/taichung-church-reports-site/',
+    },
+  ];
 
   function ordered(items, order) {
     const rank = (id) => order.includes(id) ? order.indexOf(id) : order.length;
@@ -139,6 +150,16 @@
         { id: 'info', title: '網站資訊', items: Object.entries(data.footer || {})
           .filter(([, item]) => item && item.url).map(([id, item]) => ({ ...item, id })) },
       ];
+      for (const extra of EXTRA_TOOLS) {
+        const group = groups.find((g) => g.id === extra.categoryId);
+        if (!group || group.items.some((item) => item.id === extra.id)) continue;
+        group.items.push({
+          id: extra.id,
+          title: extra.title,
+          description: extra.description || '',
+          url: extra.url,
+        });
+      }
       const sections = [];
       for (const [categoryIndex, group] of ordered(groups.filter(group => !EXCLUDED_CATEGORY_IDS.has(group.id)), CATEGORY_ORDER).entries()) {
         // Distinct color families in display order; future categories also receive a hue.

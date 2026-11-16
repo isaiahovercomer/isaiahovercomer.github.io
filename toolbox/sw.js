@@ -1,5 +1,5 @@
 // 只快取本頁（/toolbox/）自己的靜態檔；LIFF 連結、後端 API 與其他網址一律直接走網路。
-const CACHE = 'toolbox-v3';
+const CACHE = 'toolbox-v4';
 const FILES = [
   './',
   'index.html',
