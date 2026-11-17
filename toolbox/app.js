@@ -73,13 +73,113 @@
     return String(s == null ? '' : s).replace(/[\u0000-\u001f\u007f]/g, ' ').trim().slice(0, n);
   }
 
+  function fetchJson(url, ms) {
+    const ctrl = typeof AbortController === 'function' ? new AbortController() : null;
+    const t = ctrl ? setTimeout(() => ctrl.abort(), ms) : 0;
+    return fetch(url, { cache: 'no-store', credentials: 'omit', signal: ctrl ? ctrl.signal : undefined })
+      .then((r) => {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      })
+      .finally(() => clearTimeout(t));
+  }
+
+
+  /* ---------- 卡片圖示：只用本地檔，不向外部即時載入 ---------- */
+  const ICON_FILE = /^[a-zA-Z0-9][a-zA-Z0-9._-]*\.(png|svg)$/;
+  let ICON_MAP = { byId: {}, byPath: {} };
+
+  function safeIconFile(name) {
+    return typeof name === 'string' && ICON_FILE.test(name) ? name : '';
+  }
+
+  function firstGlyph(name) {
+    const s = String(name == null ? '' : name).trim();
+    const m = s.match(/[\p{L}\p{N}]/u);
+    return m ? m[0] : '‧';
+  }
+
+  function letterBadge(name) {
+    const el = document.createElement('span');
+    el.className = 'tool-letter';
+    el.setAttribute('aria-hidden', 'true');
+    el.textContent = firstGlyph(name);
+    return el;
+  }
+
+  function normalizePath(pathname) {
+    return (pathname || '/').replace(/\/index\.html$/, '').replace(/\/$/, '') || '/';
+  }
+
+  function iconSrcFor(url, id) {
+    if (id && ICON_MAP.byId[id]) {
+      const f = safeIconFile(ICON_MAP.byId[id]);
+      if (f) return 'icons/' + f;
+    }
+    let u;
+    try { u = new URL(url, location.href); } catch (e) { return ''; }
+    const path = normalizePath(u.pathname);
+    const haystacks = [u.host + path, u.hostname + path, path];
+    const entries = Object.entries(ICON_MAP.byPath || {});
+    entries.sort((a, b) => b[0].length - a[0].length);
+    for (const [key, file] of entries) {
+      const f = safeIconFile(file);
+      if (!f || !key) continue;
+      const k = String(key).replace(/\/$/, '');
+      for (const hay of haystacks) {
+        if (hay === k || (k && hay.startsWith(k + '/'))) return 'icons/' + f;
+      }
+    }
+    return '';
+  }
+
+  function iconEl(item) {
+    const src = iconSrcFor(item.url, item.id);
+    if (!src) return letterBadge(item.name);
+    const img = document.createElement('img');
+    img.setAttribute('src', src);
+    img.setAttribute('alt', '');
+    img.setAttribute('width', '72');
+    img.setAttribute('height', '72');
+    img.decoding = 'async';
+    img.addEventListener('error', () => {
+      if (img.parentNode) img.replaceWith(letterBadge(item.name));
+    });
+    return img;
+  }
+
+  const iconMapReady = fetchJson('icons/map.json', 8000)
+    .then((data) => {
+      if (!data || typeof data !== 'object') return;
+      const byId = {};
+      const byPath = {};
+      if (data.byId && typeof data.byId === 'object') {
+        for (const [k, v] of Object.entries(data.byId)) {
+          const f = safeIconFile(v);
+          if (k && f) byId[k] = f;
+        }
+      }
+      if (data.byPath && typeof data.byPath === 'object') {
+        for (const [k, v] of Object.entries(data.byPath)) {
+          const f = safeIconFile(v);
+          if (k && f) byPath[k] = f;
+        }
+      }
+      ICON_MAP = { byId, byPath };
+    })
+    .catch(() => {});
+
   function makeCard(item) {
     const li = document.createElement('li');
     li.className = 'tool tool-shared';
 
+    const head = document.createElement('div');
+    head.className = 'tool-head';
+    head.appendChild(iconEl(item));
     const h = document.createElement('h2');
     h.textContent = item.name;
-    li.appendChild(h);
+    head.appendChild(h);
+    li.appendChild(head);
 
     const p = document.createElement('p');
     p.className = 'tool-desc';
@@ -141,6 +241,7 @@
   async function loadBuiltins() {
     const message = document.getElementById('builtin-status');
     try {
+      await iconMapReady;
       const data = await fetchJson('../links.json', 10000);
       const root = new URL('../', location.href);
       const self = new URL('./', location.href);
@@ -171,7 +272,7 @@
           const url = new URL(item.url, root);
           if (!/^https?:$/.test(url.protocol)) continue;
           if (url.origin === self.origin && url.pathname.replace(/index\.html$/, '').replace(/\/$/, '') === self.pathname.replace(/\/$/, '')) continue;
-          const card = makeCard({ name: item.title, description: item.description || '', url: url.href });
+          const card = makeCard({ id: item.id, name: item.title, description: item.description || '', url: url.href });
           card.className = 'tool tool-builtin';
           const index = cards.length;
           const shade = (index * 0.618034) % 1;
@@ -227,17 +328,6 @@
     listStatus.textContent = '';
   }
 
-  function fetchJson(url, ms) {
-    const ctrl = typeof AbortController === 'function' ? new AbortController() : null;
-    const t = ctrl ? setTimeout(() => ctrl.abort(), ms) : 0;
-    return fetch(url, { cache: 'no-store', credentials: 'omit', signal: ctrl ? ctrl.signal : undefined })
-      .then((r) => {
-        if (!r.ok) throw new Error('HTTP ' + r.status);
-        return r.json();
-      })
-      .finally(() => clearTimeout(t));
-  }
-
   // 跨網域讀取失敗時的後備：JSONP（後端只接受安全的 callback 名稱）
   function jsonp(url, ms) {
     return new Promise((resolve, reject) => {
@@ -260,9 +350,11 @@
   function loadShared(base) {
     const url = base + (base.includes('?') ? '&' : '?') + 'action=list';
     listStatus.textContent = '正在讀取推薦連結…';
-    return fetchJson(url, 10000)
-      .catch(() => jsonp(url, 10000))
-      .then((data) => {
+    return Promise.all([
+      iconMapReady,
+      fetchJson(url, 10000).catch(() => jsonp(url, 10000)),
+    ])
+      .then(([, data]) => {
         if (!data || data.ok === false) throw new Error('bad data');
         renderShared(data);
       })

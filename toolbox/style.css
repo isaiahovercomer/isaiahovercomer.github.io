@@ -67,12 +67,27 @@ h1 { margin: 0; font-size: 28px; line-height: 1.4; letter-spacing: 0.02em; }
 }
 
 .tool-head { display: flex; align-items: center; gap: 14px; }
-.tool-head img {
+.tool-head h2, .tool-head h3 { flex: 1; min-width: 0; }
+.tool-head img,
+.tool-letter {
   flex: none;
   width: 72px;
   height: 72px;
   border-radius: 18px;
   box-shadow: 0 2px 8px rgba(38, 36, 31, 0.12);
+}
+.tool-head img {
+  object-fit: contain;
+  background: #fff;
+}
+.tool-letter {
+  display: grid;
+  place-items: center;
+  background: var(--accent);
+  color: #fff;
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1;
 }
 .tool h2, .tool h3 {
   margin: 0;
