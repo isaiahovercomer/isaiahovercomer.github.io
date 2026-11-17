@@ -72,7 +72,20 @@ async function expectBuiltins(page) {
     await expect(card.locator('button.btn-copy')).toHaveAttribute('data-url', resolved(t.url, page));
   }
   await expect(page.locator('#builtin a[href$="/toolbox/"]')).toHaveCount(0);
-  await expect(page.locator('#builtin img, a[href^="mailto:"]')).toHaveCount(0);
+  await expect(page.locator('#builtin a[href^="mailto:"]')).toHaveCount(0);
+  const iconMap = JSON.parse(fs.readFileSync(path.join(boxDir, 'icons', 'map.json'), 'utf8'));
+  for (const [i, t] of tools.entries()) {
+    const card = cards.nth(i);
+    const marks = card.locator('.tool-head img, .tool-head .tool-letter');
+    await expect(marks).toHaveCount(1);
+    const file = iconMap.byId[t.id];
+    if (file) {
+      await expect(card.locator('.tool-head img')).toHaveAttribute('src', new RegExp(`(?:^|/)icons/${file.replace(/[.]/g, '\\.')}$`));
+      await expect(card.locator('.tool-head img')).toHaveAttribute('alt', '');
+    } else {
+      await expect(card.locator('.tool-head .tool-letter')).toHaveCount(1);
+    }
+  }
   return cards;
 }
 
@@ -389,13 +402,17 @@ test.describe('台中全時間服事百寶箱', () => {
     const card = page.locator('#builtin li').filter({ hasText: '新增測試工具' });
     await expect(card.locator('h3')).toHaveText('新增測試工具');
     await expect(card.locator('.tool-desc')).toHaveText('共用資料自動更新');
+    await expect(card.locator('.tool-letter')).toHaveText('新');
+    await expect(card.locator('.tool-head img')).toHaveCount(0);
     await expect(card.locator('a')).toHaveAttribute('href', new URL('/new-tool/', page.url()).href);
     await expect(page.locator('#builtin')).not.toContainText('自身別名');
     const addedColor = await card.evaluate(el => getComputedStyle(el).backgroundColor);
     const firstColor = await page.locator('#builtin .tool').first().evaluate(el => getComputedStyle(el).backgroundColor);
     expect(addedColor).not.toBe(firstColor);
-    const futureColor = await page.locator('#builtin .category').last().locator('.tool').evaluate(el => getComputedStyle(el).backgroundColor);
+    const futureCard = page.locator('#builtin .category').last().locator('.tool');
+    const futureColor = await futureCard.evaluate(el => getComputedStyle(el).backgroundColor);
     expect(futureColor).not.toBe(firstColor);
+    await expect(futureCard.locator('.tool-letter')).toHaveText('未');
     await expect(page.locator('#builtin .category > h2')).toHaveText([...groups.map((g) => g.title), '新分類']);
     await expect(page.locator('#builtin .category').first().locator('h3')).toHaveText([...groups[0].items.map((i) => i.title), '新增測試工具']);
   });
@@ -410,10 +427,18 @@ test.describe('台中全時間服事百寶箱', () => {
   test('source files have no cross glyphs or emoji', async ({}, testInfo) => {
     test.skip(testInfo.project.name !== 'desktop', 'file scan once');
     for (const f of ['index.html', 'style.css', 'app.js', 'config.js', 'sw.js', 'manifest.webmanifest',
-      'img/app-icon.svg', 'img/signup.svg', 'img/link-card.svg', 'img/love-letter.svg']) {
+      'img/app-icon.svg', 'img/signup.svg', 'img/link-card.svg', 'img/love-letter.svg', 'icons/map.json']) {
       const text = fs.readFileSync(path.join(boxDir, f), 'utf8');
       expect(forbidden.test(text), f).toBeFalsy();
       expect(emoji.test(text), f).toBeFalsy();
+    }
+    const sw = fs.readFileSync(path.join(boxDir, 'sw.js'), 'utf8');
+    expect(sw).toMatch(/const CACHE = 'toolbox-v5'/);
+    const iconMap = JSON.parse(fs.readFileSync(path.join(boxDir, 'icons', 'map.json'), 'utf8'));
+    expect(sw).toContain('icons/map.json');
+    for (const file of Object.values(iconMap.byId)) {
+      expect(sw).toContain('icons/' + file);
+      expect(fs.existsSync(path.join(boxDir, 'icons', file)), file).toBeTruthy();
     }
     // config.js 只放公開網址，不放密碼或金鑰
     const cfg = fs.readFileSync(path.join(boxDir, 'config.js'), 'utf8');
@@ -432,6 +457,7 @@ test.describe('台中全時間服事百寶箱', () => {
           items: [
             { name: '<img src=x onerror="window.__xss=1">台中召會', url: 'https://example.org/a?b=1&c=2',
               description: '<script>window.__xss=1</script>說明文字' },
+            { name: '原文對照聖經', url: 'https://isaiahovercomer.github.io/interlinear-bible/', description: '已審核' },
             { name: '壞連結', url: 'javascript:window.__xss=1', description: '不應顯示' },
             { name: '資料網址', url: 'data:text/html,<script>window.__xss=1</script>', description: '不應顯示' },
             { name: '沒有協定', url: 'example.org', description: '不應顯示' },
@@ -444,13 +470,24 @@ test.describe('台中全時間服事百寶箱', () => {
 
       const shared = page.locator('#shared-list > li.tool');
       await expect(page.locator('#shared')).toBeVisible();
-      await expect(shared).toHaveCount(2);
+      await expect(shared).toHaveCount(3);
       await expect(shared.nth(0).locator('h2')).toHaveText('<img src=x onerror="window.__xss=1">台中召會');
       await expect(shared.nth(0).locator('.tool-desc')).toHaveText('<script>window.__xss=1</script>說明文字');
       await expect(shared.nth(0).locator('a.btn-open')).toHaveAttribute('href', 'https://example.org/a?b=1&c=2');
       await expect(shared.nth(0).locator('button.btn-copy')).toHaveAttribute('data-url', 'https://example.org/a?b=1&c=2');
-      await expect(shared.nth(1).locator('a.btn-open')).toHaveAttribute('href', 'http://example.com/');
-      await expect(page.locator('#shared img, #shared script')).toHaveCount(0);
+      await expect(shared.nth(0).locator('.tool-letter')).toHaveCount(1);
+      await expect(shared.nth(0).locator('img')).toHaveCount(0);
+      await expect(shared.nth(1).locator('h2')).toHaveText('原文對照聖經');
+      await expect(shared.nth(1).locator('.tool-head img')).toHaveAttribute('src', /(?:^|\/)icons\/interlinear-bible\.png$/);
+      await expect(shared.nth(2).locator('a.btn-open')).toHaveAttribute('href', 'http://example.com/');
+      await expect(shared.nth(2).locator('.tool-letter')).toHaveText('第');
+      await expect(page.locator('#shared script')).toHaveCount(0);
+      const iconSrcs = await page.locator('#shared img').evaluateAll((imgs) => imgs.map((img) => img.getAttribute('src')));
+      expect(iconSrcs.length).toBe(1);
+      for (const src of iconSrcs) {
+        expect(src).toMatch(/(?:^|\/)icons\/[a-zA-Z0-9._-]+\.(png|svg)$/);
+        expect(src).not.toMatch(/^(https?:|data:|javascript:)/i);
+      }
       expect(await page.evaluate(() => window.__xss)).toBeUndefined();
       const hrefs = await page.$$eval('a[href]', (as) => as.map((a) => a.getAttribute('href')));
       for (const h of hrefs) expect(h).toMatch(/^https?:\/\//);

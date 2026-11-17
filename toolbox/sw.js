@@ -1,5 +1,5 @@
 // 只快取本頁（/toolbox/）自己的靜態檔；LIFF 連結、後端 API 與其他網址一律直接走網路。
-const CACHE = 'toolbox-v4';
+const CACHE = 'toolbox-v5';
 const FILES = [
   './',
   'index.html',
@@ -16,6 +16,22 @@ const FILES = [
   'img/icon-192.png',
   'img/icon-512.png',
   'img/maskable-512.png',
+  'icons/map.json',
+  'icons/morning-revival-today-site.png',
+  'icons/interlinear-bible.png',
+  'icons/forms-app-web.png',
+  'icons/2026-tcchlife-pyramid.png',
+  'icons/2026-twyp-chlife.png',
+  'icons/taichung-church-reports-site.png',
+  'icons/line-tools.png',
+  'icons/line-signup.png',
+  'icons/line-link-card.png',
+  'icons/line-love-letter.png',
+  'icons/fulltime-weekly-report.png',
+  'icons/numbered-score-studio.png',
+  'icons/family-story-365.png',
+  'icons/gospel-tracts-animation.png',
+  'icons/curd-honey-bible-journey.png',
 ];
 const URLS = new Set(FILES.map((f) => new URL(f, self.registration.scope).href));
 
