@@ -15,6 +15,10 @@ const tools = [
     desc: '增加分享單一網址的顯眼可讀性，同時可在裡面填上行動資訊，自動產生邀請卡。' },
   { title: 'LINE流通愛圖卡建立平台', url: 'https://liff.line.me/2012412693-IhnpCNtr',
     desc: '推動題名代禱後下一步在LINE上寫封問候信關心小羊福友，聖徒們也可以彼此牧養。' },
+  { title: '我的代禱卡．小區代禱牆', url: 'https://liff.line.me/2012412693-LFVpYPMf',
+    desc: '個人題名代禱卡，加上依小排整理的小區代禱牆；點名字就能寫信關心，一鍵分享到 LINE。' },
+  { title: '開展隊記錄彙整代禱平台', url: 'https://liff.line.me/2012412693-u3yd2OOT',
+    desc: '出外開展時記錄接觸、叩訪、傳講人數與有效名單，自動彙整每次與累計成果，名單可直接上代禱牆。' },
 ];
 
 test.describe('LINE 功能整理頁', () => {
@@ -25,9 +29,9 @@ test.describe('LINE 功能整理頁', () => {
     await expect(page).toHaveTitle('召會生活實行常用LINE功能整理');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('召會生活實行常用LINE功能整理');
 
-    // three cards, in order, with exact links and copy
+    // five cards, in order, with exact links and copy
     const cards = page.locator('li.tool');
-    await expect(cards).toHaveCount(3);
+    await expect(cards).toHaveCount(tools.length);
     for (const [i, t] of tools.entries()) {
       const card = cards.nth(i);
       await expect(card.locator('h2')).toHaveText(`${i + 1}${t.title}`);
@@ -86,7 +90,7 @@ test.describe('LINE 功能整理頁', () => {
     await expect(page.locator('meta[name="apple-mobile-web-app-title"]')).toHaveAttribute('content', 'LINE功能整理');
 
     // icon files on disk
-    for (const f of ['signup.svg', 'link-card.svg', 'love-letter.svg', 'app-icon.svg',
+    for (const f of ['signup.svg', 'link-card.svg', 'love-letter.svg', 'prayer-wall.svg', 'outreach.svg', 'app-icon.svg',
       'icon-192.png', 'icon-512.png', 'maskable-512.png', 'apple-touch-icon.png', 'favicon-32.png']) {
       expect(fs.existsSync(path.join(lineDir, 'img', f)), f).toBeTruthy();
     }
@@ -105,7 +109,8 @@ test.describe('LINE 功能整理頁', () => {
     expect(forbidden.test(html)).toBeFalsy();
     expect(emoji.test(await page.locator('body').innerText())).toBeFalsy();
     for (const f of ['index.html', 'style.css', 'app.js', 'sw.js', 'manifest.webmanifest',
-      'img/app-icon.svg', 'img/signup.svg', 'img/link-card.svg', 'img/love-letter.svg']) {
+      'img/app-icon.svg', 'img/signup.svg', 'img/link-card.svg', 'img/love-letter.svg',
+      'img/prayer-wall.svg', 'img/outreach.svg']) {
       const text = fs.readFileSync(path.join(lineDir, f), 'utf8');
       expect(forbidden.test(text), f).toBeFalsy();
       expect(emoji.test(text), f).toBeFalsy();

@@ -52,14 +52,14 @@ test.describe('link hub', () => {
     await expect(page.getByRole('heading', { name: /簡晨光/ })).toBeVisible();
 
     const cats = page.locator('details.category');
-    await expect(cats).toHaveCount(5);
+    await expect(cats).toHaveCount(6);
     for (const el of await cats.all()) {
       await expect(el).toHaveAttribute('open', '');
     }
 
-    // 16 content cards (16 items in links.json)
-    await expect(page.locator('a.card')).toHaveCount(16);
-    await expect(page.locator('a.card img.card-icon')).toHaveCount(16);
+    // 21 content cards (21 items in links.json)
+    await expect(page.locator('a.card')).toHaveCount(21);
+    await expect(page.locator('a.card img.card-icon')).toHaveCount(21);
     await expect(page.getByRole('navigation', { name: '社群連結' }).getByRole('link', { name: 'Facebook' })).toBeVisible();
     await expect(page.getByRole('navigation', { name: '社群連結' }).getByRole('link', { name: 'Facebook' })).toHaveAttribute('href', 'https://www.facebook.com/isaiah.overcomer');
 
@@ -107,7 +107,7 @@ test.describe('link hub', () => {
     await expect(page.locator('#empty')).toBeVisible();
 
     await page.locator('#q').fill('');
-    await expect(page.locator('a.card:visible')).toHaveCount(16);
+    await expect(page.locator('a.card:visible')).toHaveCount(21);
 
     // collapse one category
     const first = cats.first();

@@ -10,13 +10,14 @@ const emoji = /\p{Extended_Pictographic}/u;
 const FAKE_API = 'https://toolbox-api.example/exec';
 
 const hub = require('../links.json');
-const categoryOrder = ['bible', 'church', 'line-cards', 'music', 'family', 'social', 'info'];
+const categoryOrder = ['bible', 'church', 'line-cards', 'tools', 'music', 'family', 'social', 'info'];
 const itemOrder = {
   social: ['youtube', 'soundcloud', 'blog', 'facebook', 'instagram'],
   info: ['privacy', 'terms'],
   bible: ['morning-revival-today-site', 'interlinear-bible'],
-  church: ['forms-app-web', '2026-tcchlife-pyramid', '2026-twyp-chlife', 'taichung-church-reports-site'],
-  'line-cards': ['line-tools', 'line-signup', 'line-link-card', 'line-love-letter', 'fulltime-weekly-report'],
+  church: ['forms-app-web', 'taichung-church-reports-site', '2026-tcchlife-pyramid', '2026-twyp-chlife'],
+  'line-cards': ['line-tools', 'line-signup', 'line-link-card', 'line-love-letter', 'line-prayer-wall', 'line-outreach', 'fulltime-weekly-report'],
+  tools: ['pdb-workbench'],
   music: ['isaiahs-garden', 'numbered-score-studio'],
   family: ['family-story-365', 'gospel-tracts-animation', 'curd-honey-bible-journey'],
 };
@@ -49,9 +50,9 @@ for (const group of groups) {
   group.items = [...group.items].sort((a, b) => rank(order, a.id) - rank(order, b.id));
 }
 const excludedGroups = groups.filter(g => ['social', 'info'].includes(g.id));
-const excludedTools = [...excludedGroups.flatMap(g => g.items), ...groups.flatMap(g => g.items).filter(i => i.id === 'isaiahs-garden')];
+const excludedTools = [...excludedGroups.flatMap(g => g.items), ...groups.flatMap(g => g.items).filter(i => ['isaiahs-garden', 'ai-quota-dashboard'].includes(i.id))];
 groups.splice(0, groups.length, ...groups.filter(g => !['social', 'info'].includes(g.id)));
-for (const group of groups) group.items = group.items.filter(i => i.id !== 'isaiahs-garden');
+for (const group of groups) group.items = group.items.filter(i => !['isaiahs-garden', 'ai-quota-dashboard'].includes(i.id));
 const tools = groups.flatMap((g) => g.items);
 const resolved = (url, page) => new URL(url, new URL('../', page.url())).href;
 
@@ -433,7 +434,7 @@ test.describe('台中全時間服事百寶箱', () => {
       expect(emoji.test(text), f).toBeFalsy();
     }
     const sw = fs.readFileSync(path.join(boxDir, 'sw.js'), 'utf8');
-    expect(sw).toMatch(/const CACHE = 'toolbox-v5'/);
+    expect(sw).toMatch(/const CACHE = 'toolbox-v6'/);
     const iconMap = JSON.parse(fs.readFileSync(path.join(boxDir, 'icons', 'map.json'), 'utf8'));
     expect(sw).toContain('icons/map.json');
     for (const file of Object.values(iconMap.byId)) {

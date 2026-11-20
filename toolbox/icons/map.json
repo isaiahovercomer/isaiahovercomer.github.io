@@ -15,7 +15,10 @@
     "numbered-score-studio": "numbered-score-studio.png",
     "family-story-365": "family-story-365.png",
     "gospel-tracts-animation": "gospel-tracts-animation.png",
-    "curd-honey-bible-journey": "curd-honey-bible-journey.png"
+    "curd-honey-bible-journey": "curd-honey-bible-journey.png",
+    "line-outreach": "line-outreach.png",
+    "line-prayer-wall": "line-prayer-wall.png",
+    "pdb-workbench": "pdb-workbench.png"
   },
   "byPath": {
     "/morning-revival-today-site": "morning-revival-today-site.png",
@@ -47,6 +50,12 @@
     "/gospel-tracts-animation": "gospel-tracts-animation.png",
     "isaiahovercomer.github.io/gospel-tracts-animation": "gospel-tracts-animation.png",
     "/curd-honey-bible-journey": "curd-honey-bible-journey.png",
-    "isaiahovercomer.github.io/curd-honey-bible-journey": "curd-honey-bible-journey.png"
+    "isaiahovercomer.github.io/curd-honey-bible-journey": "curd-honey-bible-journey.png",
+    "/line-outreach": "line-outreach.png",
+    "isaiahovercomer.github.io/line-outreach": "line-outreach.png",
+    "/pdb-workbench": "pdb-workbench.png",
+    "isaiahovercomer.github.io/pdb-workbench": "pdb-workbench.png",
+    "/line-prayer-wall": "line-prayer-wall.png",
+    "isaiahovercomer.github.io/line-prayer-wall": "line-prayer-wall.png"
   }
 }

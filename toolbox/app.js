@@ -210,12 +210,13 @@
   // 常用研讀與召會事務在前，分享工具與內容接續；未列出的項目保留資料原順序。
   // 僅在百寶箱隱藏；未列入排除表的首頁新增資料仍自動顯示。
   const EXCLUDED_CATEGORY_IDS = new Set(['social', 'info']);
-  const EXCLUDED_ITEM_IDS = new Set(['isaiahs-garden']);
-  const CATEGORY_ORDER = ['bible', 'church', 'line-cards', 'music', 'family', 'social', 'info'];
+  const EXCLUDED_ITEM_IDS = new Set(['isaiahs-garden', 'ai-quota-dashboard']);
+  const CATEGORY_ORDER = ['bible', 'church', 'line-cards', 'tools', 'music', 'family', 'social', 'info'];
   const ITEM_ORDER = {
     bible: ['morning-revival-today-site', 'interlinear-bible'],
-    church: ['forms-app-web', '2026-tcchlife-pyramid', '2026-twyp-chlife', 'taichung-church-reports-site'],
-    'line-cards': ['line-tools', 'line-signup', 'line-link-card', 'line-love-letter', 'fulltime-weekly-report'],
+    church: ['forms-app-web', 'taichung-church-reports-site', '2026-tcchlife-pyramid', '2026-twyp-chlife'],
+    'line-cards': ['line-tools', 'line-signup', 'line-link-card', 'line-love-letter', 'line-prayer-wall', 'line-outreach', 'fulltime-weekly-report'],
+    tools: ['pdb-workbench'],
     music: ['isaiahs-garden', 'numbered-score-studio'],
     family: ['family-story-365', 'gospel-tracts-animation', 'curd-honey-bible-journey'],
     social: ['youtube', 'soundcloud', 'blog', 'facebook', 'instagram'],
