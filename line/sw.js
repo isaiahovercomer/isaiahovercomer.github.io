@@ -1,5 +1,5 @@
 // 只快取本頁（/line/）自己的靜態檔；LIFF 連結與其他網址一律直接走網路。
-const CACHE = 'line-tools-v2';
+const CACHE = 'line-tools-v3';
 const FILES = [
   './',
   'index.html',
@@ -10,6 +10,8 @@ const FILES = [
   'img/signup.svg',
   'img/link-card.svg',
   'img/love-letter.svg',
+  'img/prayer-wall.svg',
+  'img/outreach.svg',
   'img/favicon-32.png',
   'img/apple-touch-icon.png',
   'img/icon-192.png',

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- 開展隊圖示：福音綠底、米白地標（出外開展的地點）、地標裡金色的門＝叩訪、下方一排腳印＝一起出去 -->
+  <rect width="512" height="512" rx="112" fill="#22483A"/>
+  <!-- 地標 -->
+  <path d="M256 70c-78 0-140 60-140 136 0 98 118 204 132 216a12 12 0 0 0 16 0c14-12 132-118 132-216 0-76-62-136-140-136z" fill="#F7F1E4"/>
+  <!-- 門（叩訪） -->
+  <path d="M206 262v-62a50 50 0 0 1 100 0v62z" fill="#C49356"/>
+  <circle cx="284" cy="232" r="7" fill="#22483A"/>
+  <rect x="190" y="262" width="132" height="14" rx="7" fill="#22483A"/>
+  <!-- 腳印 -->
+  <g fill="#C49356">
+    <ellipse cx="150" cy="444" rx="15" ry="22" transform="rotate(-18 150 444)"/>
+    <ellipse cx="198" cy="462" rx="15" ry="22" transform="rotate(-18 198 462)"/>
+    <ellipse cx="314" cy="462" rx="15" ry="22" transform="rotate(18 314 462)"/>
+    <ellipse cx="362" cy="444" rx="15" ry="22" transform="rotate(18 362 444)"/>
+  </g>
+</svg>

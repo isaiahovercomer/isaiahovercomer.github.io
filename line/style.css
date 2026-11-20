@@ -88,6 +88,24 @@ h1 { margin: 0; font-size: 28px; line-height: 1.4; letter-spacing: 0.02em; }
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44'%3E%3Ccircle cx='11' cy='11' r='5' fill='none' stroke='%23C49356' stroke-opacity='.13' stroke-width='1.6'/%3E%3Ccircle cx='33' cy='33' r='5' fill='none' stroke='%23C49356' stroke-opacity='.13' stroke-width='1.6'/%3E%3C/svg%3E");
 }
 
+/* 代禱卡．代禱牆：淡石榴紅，淡淡小籽點 */
+.tool-pray {
+  --tone: #FAF3F1;
+  --edge: #E8CDCB;
+  --accent: #8A2F3B;
+  --accent-ink: #5A1A24;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Cellipse cx='10' cy='10' rx='2' ry='2.8' fill='%238A2F3B' fill-opacity='.08'/%3E%3Cellipse cx='30' cy='30' rx='2' ry='2.8' fill='%238A2F3B' fill-opacity='.08'/%3E%3C/svg%3E");
+}
+
+/* 開展隊：福音綠，淡淡腳印點 */
+.tool-outreach {
+  --tone: #EDF3EF;
+  --edge: #C6D8CD;
+  --accent: #22483A;
+  --accent-ink: #163026;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Cellipse cx='12' cy='14' rx='2.6' ry='3.6' fill='%2322483A' fill-opacity='.07'/%3E%3Cellipse cx='20' cy='10' rx='2.6' ry='3.6' fill='%2322483A' fill-opacity='.07'/%3E%3Cellipse cx='32' cy='36' rx='2.6' ry='3.6' fill='%2322483A' fill-opacity='.07'/%3E%3C/svg%3E");
+}
+
 .tool-head { display: flex; align-items: center; gap: 14px; }
 .tool-head img {
   flex: none;

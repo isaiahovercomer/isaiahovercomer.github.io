@@ -60,6 +60,13 @@
           "icon": "img/sites/forms-app-web.png"
         },
         {
+          "title": "行動報導協作平台",
+          "description": "台中市召會各會所行動報導，多人協作撰寫、整理與瀏覽。",
+          "url": "https://isaiahovercomer.github.io/taichung-church-reports-site/",
+          "id": "taichung-church-reports-site",
+          "icon": "img/sites/taichung-church-reports-site.png"
+        },
+        {
           "title": "全臺青年統計",
           "description": "全臺青年聚會與受浸人數統計（2023–2026）。",
           "url": "https://isaiahovercomer.github.io/2026-twyp-chlife/",
@@ -84,21 +91,14 @@
     },
     {
       "id": "line-cards",
-      "title": "LINE 圖卡工具",
+      "title": "LINE 建立平台",
       "items": [
         {
           "title": "LINE功能整理",
-          "description": "召會生活實行常用的三個 LINE 建立平台，可加到手機主畫面。",
+          "description": "召會生活實行常用的五個 LINE 建立平台，可加到手機主畫面。",
           "url": "line/",
           "id": "line-tools",
           "icon": "img/sites/line-tools.png"
-        },
-        {
-          "title": "網頁圖卡平台",
-          "description": "把網頁做成可在 LINE 對話分享的圖卡。",
-          "url": "https://isaiahovercomer.github.io/line-link-card/",
-          "id": "line-link-card",
-          "icon": "img/sites/line-link-card.png"
         },
         {
           "title": "活動登記圖卡",
@@ -108,15 +108,36 @@
           "icon": "img/sites/line-signup.png"
         },
         {
+          "title": "網頁圖卡平台",
+          "description": "把網頁做成可在 LINE 對話分享的圖卡。",
+          "url": "https://isaiahovercomer.github.io/line-link-card/",
+          "id": "line-link-card",
+          "icon": "img/sites/line-link-card.png"
+        },
+        {
           "title": "流通神聖的愛",
-          "description": "為活動建立可傳情、拆信的 LINE 圖卡。",
+          "description": "寫問候信關心福音朋友，對方在 LINE 收信、回信，把愛傳下去。",
           "url": "https://isaiahovercomer.github.io/line-love-letter/",
           "id": "line-love-letter",
           "icon": "img/sites/line-love-letter.png"
         },
         {
+          "title": "我的代禱卡．小區代禱牆",
+          "description": "個人代禱卡與依小排整理的小區代禱牆，可分享到 LINE。",
+          "url": "https://praywall.pages.dev/",
+          "id": "line-prayer-wall",
+          "icon": "img/sites/line-prayer-wall.png"
+        },
+        {
+          "title": "開展隊記錄彙整代禱平台",
+          "description": "記錄每次出外開展的人數與名單，自動彙整，附代禱牆。",
+          "url": "https://isaiahovercomer.github.io/line-outreach/",
+          "id": "line-outreach",
+          "icon": "img/sites/line-outreach.png"
+        },
+        {
           "title": "全時間工作回報",
-          "description": "全時間工作重點回報。",
+          "description": "全時間服事者每週填報工作重點，自動彙整與統計。",
           "url": "https://isaiahovercomer.github.io/fulltime-weekly-report/",
           "id": "fulltime-weekly-report",
           "icon": "img/sites/fulltime-weekly-report.png"
@@ -147,6 +168,26 @@
           "url": "https://isaiahovercomer.github.io/curd-honey-bible-journey/",
           "id": "curd-honey-bible-journey",
           "icon": "img/sites/curd-honey-bible-journey.png"
+        }
+      ]
+    },
+    {
+      "id": "tools",
+      "title": "實用工具",
+      "items": [
+        {
+          "title": "PDB 文件工作台",
+          "description": "把網頁、書報與詩歌編成電子書，製作或轉換 PDB、EPUB。",
+          "url": "https://isaiahovercomer.github.io/pdb-workbench/",
+          "id": "pdb-workbench",
+          "icon": "img/sites/pdb-workbench.png"
+        },
+        {
+          "title": "AI額度即時儀表板",
+          "description": "各家 AI 的使用額度、花費與重置倒數集中一頁，可加到主畫面。",
+          "url": "https://isaiahovercomer.github.io/ai-quota-dashboard-site/app/",
+          "id": "ai-quota-dashboard",
+          "icon": "img/sites/ai-quota-dashboard.png"
         }
       ]
     }

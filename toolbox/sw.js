@@ -1,5 +1,5 @@
 // 只快取本頁（/toolbox/）自己的靜態檔；LIFF 連結、後端 API 與其他網址一律直接走網路。
-const CACHE = 'toolbox-v5';
+const CACHE = 'toolbox-v6';
 const FILES = [
   './',
   'index.html',
@@ -27,7 +27,10 @@ const FILES = [
   'icons/line-signup.png',
   'icons/line-link-card.png',
   'icons/line-love-letter.png',
+  'icons/line-prayer-wall.png',
+  'icons/line-outreach.png',
   'icons/fulltime-weekly-report.png',
+  'icons/pdb-workbench.png',
   'icons/numbered-score-studio.png',
   'icons/family-story-365.png',
   'icons/gospel-tracts-animation.png',
