@@ -149,6 +149,13 @@
       "title": "兒青與家庭",
       "items": [
         {
+          "title": "主恢復寶寶命名大師",
+          "description": "依聖經和恢復本註解，為寶寶取英文名字或中文名字。",
+          "url": "https://isaiahovercomer.github.io/baby-naming-master/",
+          "id": "baby-naming-master",
+          "icon": "img/sites/baby-naming-master.png"
+        },
+        {
           "title": "家庭時光365",
           "description": "給台灣兒童家庭的分齡繪本、朗讀與故事。",
           "url": "https://isaiahovercomer.github.io/family-story-365/",
